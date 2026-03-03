@@ -18,13 +18,15 @@ namespace LITOURGIYA___OBLATION
         {
             ConsoleOutput ConsoleOutput = new ConsoleOutput(null, null, null, null, null, TextChosenColor, HighlightChosenColor, null, null, null);
             FileManagement FileManager = new FileManagement();
+            string notename = "";
             switch (ID)
             {
                 case 0:
-                    string[] prompt = FileManager.LoadAsset("JOURNAL Entry 01 - Settlement");
-                    ConsoleOutput.RenderNote(prompt, true);
+                    notename = "JOURNAL Entry 01 - Settlement";
                     break;
             }
+            string[] prompt = FileManager.LoadAsset(notename);
+            ConsoleOutput.RenderNote(prompt, true);
         }
     }
 }

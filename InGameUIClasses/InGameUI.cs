@@ -28,7 +28,7 @@ namespace LITOURGIYA___OBLATION
             int.TryParse(DataCut, out int IngameDay);
             if (IngameDay == 0)
             {
-                Intro();
+                /*Intro();
                 Console.Clear();
                 LoadNotes NoteUI = new LoadNotes(HighlightChosenColor, HighlightChosenColor);
                 NoteUI.Render(0);
@@ -37,7 +37,18 @@ namespace LITOURGIYA___OBLATION
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, null, null, null, null, TextChosenColor, HighlightChosenColor, specialsymbols, null, null);
                 ConsoleOutput.RenderOptions(options, specialsymbols);
                 ConsoleOutput.Run();
-                Console.Clear();
+                Console.Clear();*/
+                CombatInput Combat = new CombatInput();
+                bool test = Combat.PrecisionBar(4, 50);
+                if (test == true)
+                {
+                    Console.WriteLine("trefil ses twin");
+                }
+                else
+                {
+                    Console.WriteLine("Netrefil ses debile");
+                }
+                Console.ReadKey();
             }
             EmilyBaseUI BaseUI = new EmilyBaseUI();
         }
