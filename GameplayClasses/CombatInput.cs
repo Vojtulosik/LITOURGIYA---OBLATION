@@ -14,17 +14,17 @@ namespace LITOURGIYA___OBLATION
 {
     internal class CombatInput
     {
-        public bool PrecisionBar(int barlength, int refreshspeed)
+        public bool PrecisionBar(int barlength, int refreshspeed, int targetsize)
         {
 
             ConsoleKeyInfo KeyInput;
             ConsoleKey Keypressed;
             int CursorIndex = 1;
             char CursorSymbol = '-';
-            char[] bar = new char[5 + barlength * 2];
+            char[] bar = new char[4 + targetsize + barlength * 2];
             while (true)
             {
-                for (int i = 0; i < (5 + (barlength * 2) - 1); i++)
+                for (int i = 0; i < (5 + targetsize + (barlength * 2) - 1); i++)
                 {
                     bar[i] = ' ';
                 }
@@ -32,7 +32,7 @@ namespace LITOURGIYA___OBLATION
                 {
                     CursorIndex = 1;
                 }
-                if (CursorIndex == barlength + 1 || CursorIndex == barlength + 3)
+                if (CursorIndex == barlength + 1 || CursorIndex == barlength + targetsize + 2)
                 {
                     CursorIndex++;
                 }
@@ -40,8 +40,11 @@ namespace LITOURGIYA___OBLATION
                 bar[0] = '{';
                 bar[bar.Length - 1] = '}';
                 bar[1 + barlength] = '[';
-                bar[2 + barlength] = ' ';
-                bar[3 + barlength] = ']';
+                for (int i = 0; i < targetsize; i++)
+                {
+                    bar[barlength + 2 + i] = ' ';
+                }
+                bar[2 + targetsize + barlength] = ']';
 
                 Console.Clear();
 
@@ -58,7 +61,7 @@ namespace LITOURGIYA___OBLATION
                         Keypressed = KeyInput.Key;
                         if (Keypressed == ConsoleKey.Enter)
                         {
-                            if (CursorIndex == 2 + barlength)
+                            if (CursorIndex > 1 + barlength && CursorIndex < barlength + targetsize + 2)
                             {
                                 return true;
                                 break;
