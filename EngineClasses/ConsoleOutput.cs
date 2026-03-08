@@ -40,7 +40,7 @@ namespace LITOURGIYA___OBLATION
         private bool[] TextSound;
         private string[] Symbols =
         {
-                "<<  ", "  >>", "(  ", "  )", "  "
+                "<<  ", "  >>", "(  ", "  )", "  ", "[", "]", ""
         };
         private int[] SpecialSymbol;
         private int[] OptionSpecialColor;
@@ -78,6 +78,10 @@ namespace LITOURGIYA___OBLATION
             Textcolors = colors;
             Options = options;
             SpecialSymbol = specialsymbol;
+        }
+        public void UpdateValues(int optionindexplacement)
+        {
+            OptionIndexPlacement = optionindexplacement;
         }
         public void RenderText(string[] prompt, int[] colors)
         {
@@ -134,7 +138,14 @@ namespace LITOURGIYA___OBLATION
                 }
                 if (options[i] != "")
                 {
-                    Console.WriteLine($"{IndexSymbol} {Symbols[SpecialSymbol[SpecialSymbolIndex]]}{options[i]}{Symbols[SpecialSymbol[SpecialSymbolIndex + 1]]}");
+                    if (SpecialSymbol[SpecialSymbolIndex] != 7)
+                    {
+                        Console.WriteLine($"{IndexSymbol} {Symbols[SpecialSymbol[SpecialSymbolIndex]]}{options[i]}{Symbols[SpecialSymbol[SpecialSymbolIndex + 1]]}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{options[i]}");
+                    }
                 }
                 else
                 {
@@ -283,13 +294,21 @@ namespace LITOURGIYA___OBLATION
                         {
                             OptionIndexPlacement--;
                         }
-                        if (OptionIndexPlacement == -1)
+                        if (SpecialSymbol[OptionIndexPlacement * 2] == 7)
                         {
-                            OptionIndexPlacement = Options.Length - 1;
+                            OptionIndexPlacement--;
+                            if (OptionIndexPlacement == -1)
+                            {
+                                OptionIndexPlacement = Options.Length - 1;
+                            }
                         }
                         if (Options[OptionIndexPlacement] == "")
                         {
                             OptionIndexPlacement--;
+                        }
+                        if (OptionIndexPlacement == -1)
+                        {
+                            OptionIndexPlacement = Options.Length - 1;
                         }
                     }
                     else if (KeyPressed == ConsoleKey.DownArrow)
@@ -297,14 +316,36 @@ namespace LITOURGIYA___OBLATION
                         if (Options.Length > 1)
                         {
                             OptionIndexPlacement++;
-                        }
-                        if (OptionIndexPlacement == Options.Length)
-                        {
-                            OptionIndexPlacement = 0;
+                            if (OptionIndexPlacement == Options.Length)
+                            {
+                                if (SpecialSymbol[0] == 7)
+                                {
+                                    OptionIndexPlacement = 1;
+                                }
+                                else
+                                {
+                                    OptionIndexPlacement = 0;
+                                }
+                            }
                         }
                         if (Options[OptionIndexPlacement] == "")
                         {
                             OptionIndexPlacement++;
+                        }
+                        if (SpecialSymbol[OptionIndexPlacement * 2] == 7)
+                        {
+                            OptionIndexPlacement++;
+                        }
+                        if (OptionIndexPlacement == Options.Length)
+                        {
+                            if (SpecialSymbol[0] == 7)
+                            {
+                                OptionIndexPlacement = 1;
+                            }
+                            else
+                            {
+                                OptionIndexPlacement = 0;
+                            }
                         }
                     }
 
