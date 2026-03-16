@@ -10,12 +10,11 @@ namespace LITOURGIYA___OBLATION
     internal class FileManagement
     {
         public int AmountOfSouls;
-        public void Write(string path)
+
+        public void SaveProgress(string path, string[] data)
         {
-            using (StreamWriter sw = new StreamWriter(@path + ".txt"))
-            {
-                sw.WriteLine("Test");
-            }
+            File.WriteAllLines(path, data);
+            File.Move(path, Path.GetFileNameWithoutExtension(path).Substring(0, Path.GetFileNameWithoutExtension(path).IndexOf("-") + 2) + "Day " + data[0].Substring(data[0].IndexOf(":") + 1) + ".txt");
         }
         public string[] SearchFiles()
         {
@@ -85,7 +84,18 @@ namespace LITOURGIYA___OBLATION
                         Time = Time + now.Minute;
                     }
                     string Filename = "[" + Time + ", " + now.Day + "." + now.Month + "." + now.Year + "]" + " “" + UserInput + "” - Day 0";
-                    File.WriteAllText(Filename + ".txt", "ingameday :0");
+                    string[] datastructure =
+                    {
+                        //First branch == Progression status data
+                        "InGameday: 0",
+                        "Time: 9:00AM",
+                        "",
+                        //Second branch == Emily status/config data
+                        "BulletsInMag: 5",
+                        "",
+                        //Third branch == Loot data
+                    };
+                    File.WriteAllLines(Filename + ".txt", datastructure);
                     break;
             }
         }
@@ -191,8 +201,7 @@ namespace LITOURGIYA___OBLATION
                             }
                             break;
                     }
-                    break;
-                    
+                    break;  
             }
         }
         public string[] LoadData(string path)
@@ -202,8 +211,10 @@ namespace LITOURGIYA___OBLATION
         }
         public string[] LoadAsset(string name)
         {
+            Directory.SetCurrentDirectory("..");
             string dir = Path.Combine("Assets", name + ".txt");
             string[] data = File.ReadAllLines(dir);
+            Directory.SetCurrentDirectory("Savefiles");
             return data;
         }
     }

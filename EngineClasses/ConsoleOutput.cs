@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.Tracing;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,8 @@ namespace LITOURGIYA___OBLATION
         private bool[] TextSound;
         private string[] Symbols =
         {
-                "<<  ", "  >>", "(  ", "  )", "  ", "[", "]", ""
+                "<<  ", "  >>", "(  ", "  )", "  ", "[", "]", "", " (!)]"
+                //0    1       2      3      4     5    6    7   8
         };
         private int[] SpecialSymbol;
         private int[] OptionSpecialColor;
@@ -48,7 +50,8 @@ namespace LITOURGIYA___OBLATION
         public ConsoleColor TextHighlightColor = ConsoleColor.White;
         public ConsoleColor TextColor = ConsoleColor.Black;
         private string UserInput = "";
-        
+        public int OptionIndexPlacement = 0;
+
         public ConsoleOutput(string[] options, string[] prompts, int[] textcolors, int[] delay, bool[] sound, int textcolor, int highlightcolor, int[] specialsymbol, int[] optiontextcolor, string[] optiontext)
         {
             Options = options;
@@ -65,7 +68,6 @@ namespace LITOURGIYA___OBLATION
         }
         FileManagement FileManager = new FileManagement();
         SoundHub soundhub = new SoundHub();
-        private int OptionIndexPlacement = 0;
         char IndexSymbol;
         public void UpdateValues(string[] prompts, int[] colors)
         {
@@ -79,9 +81,13 @@ namespace LITOURGIYA___OBLATION
             Options = options;
             SpecialSymbol = specialsymbol;
         }
-        public void UpdateValues(int optionindexplacement)
+        public void UpdateValues(string[] prompts, int[] colors, string[] options, int[] specialsymbol, int[] optionscolors)
         {
-            OptionIndexPlacement = optionindexplacement;
+            Prompts = prompts;
+            Textcolors = colors;
+            Options = options;
+            SpecialSymbol = specialsymbol;
+            OptionSpecialColor = optionscolors;
         }
         public void RenderText(string[] prompt, int[] colors)
         {
@@ -182,6 +188,42 @@ namespace LITOURGIYA___OBLATION
                     Console.WriteLine("");
                 }
                 Console.ResetColor();
+            }
+        }
+        public void RenderOptions(string[] options, int[] SpecialSymbol, int[] optioncolors)
+        {
+            int SpecialSymbolIndex = 0;
+            for (int i = 0; i < options.Length; i++)
+            {
+                if (OptionIndexPlacement == i)
+                {
+                    Console.BackgroundColor = TextHighlightColor;
+                    Console.ForegroundColor = TextColor;
+                    IndexSymbol = '*';
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = availabletextcolors[optioncolors[i]];
+                    IndexSymbol = ' ';
+                }
+                if (options[i] != "")
+                {
+                    if (SpecialSymbol[SpecialSymbolIndex] != 7)
+                    {
+                        Console.WriteLine($"{IndexSymbol} {Symbols[SpecialSymbol[SpecialSymbolIndex]]}{options[i]}{Symbols[SpecialSymbol[SpecialSymbolIndex + 1]]}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{options[i]}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("");
+                }
+                Console.ResetColor();
+                SpecialSymbolIndex += 2;
             }
         }
         public void RenderAnimatedText(string[] prompt, int[] colors, int SelectAnimation)
@@ -293,6 +335,10 @@ namespace LITOURGIYA___OBLATION
                         if (Options.Length > 1)
                         {
                             OptionIndexPlacement--;
+                            if (OptionIndexPlacement == -1)
+                            {
+                                OptionIndexPlacement = Options.Length - 1;
+                            }
                         }
                         if (SpecialSymbol[OptionIndexPlacement * 2] == 7)
                         {
@@ -356,7 +402,14 @@ namespace LITOURGIYA___OBLATION
                         {
                             RenderText(Prompts, Textcolors);
                         }
-                        RenderOptions(Options, SpecialSymbol);
+                        if (OptionSpecialColor != null)
+                        {
+                            RenderOptions(Options, SpecialSymbol, OptionSpecialColor);
+                        }
+                        else
+                        {
+                            RenderOptions(Options, SpecialSymbol);
+                        }
                     }
                 }
             } while (KeyPressed != ConsoleKey.Enter);

@@ -6,26 +6,26 @@ using System.Xml.Serialization;
 
 namespace LITOURGIYA___OBLATION
 {
-    internal class InGameUI
+    public class InGameUI 
     {
         private string SoulFilePlacement;
         private string[] Data;
         private int IngameDay;
         private int TextChosenColor;
         private int HighlightChosenColor;
-        public InGameUI(string soulfileplacement, int textchosencolor, int highlightchosencolor) 
+        FileManagement FileManager = new FileManagement();
+        SoundHub SoundHub = new SoundHub();
+        public InGameUI(string soulfileplacement, int textchosencolor, int highlightchosencolor)
         {
             SoulFilePlacement = soulfileplacement;
             TextChosenColor = textchosencolor;
             HighlightChosenColor = highlightchosencolor;
         }
-        FileManagement FileManager = new FileManagement();
-        SoundHub SoundHub = new SoundHub();
         public void Initialisation()
         {
             Data = FileManager.LoadData(SoulFilePlacement);
-            string DataCut = Data[0].Substring(Data[0].IndexOf(":"));
-            int.TryParse(DataCut, out int IngameDay);
+            string DataCut = Data[0].Substring(Data[0].IndexOf(":") + 1);
+            int.TryParse(DataCut, out IngameDay);
             if (IngameDay == 0)
             {
                 Intro();
@@ -38,29 +38,12 @@ namespace LITOURGIYA___OBLATION
                 ConsoleOutput.RenderOptions(options, specialsymbols);
                 ConsoleOutput.Run();
                 Console.Clear();
-                CombatInput Combat = new CombatInput();
-                bool test = Combat.PrecisionBar(4, 50, 4);
-                if (test == true)
-                {
-                    Console.WriteLine("You hit the target type shit");
-                }
-                else
-                {
-                    Console.WriteLine("Innacurate FOOL!!!!!");
-                }
-                Thread.Sleep(2000);
-                test = Combat.PrecisionBar(4, 50, 4);
-                if (test == true)
-                {
-                    Console.WriteLine("You hit the target type shit");
-                }
-                else
-                {
-                    Console.WriteLine("Innacurate FOOL!!!!!");
-                }
-                Console.ReadKey();
+                string[] data = File.ReadAllLines(SoulFilePlacement);
+                data[0] = "IngameDay: 1";
+                data[1] = "Time: 9:00AM";
+                FileManager.SaveProgress(SoulFilePlacement, data);
             }
-            EmilyBaseUI BaseUI = new EmilyBaseUI(TextChosenColor, HighlightChosenColor);
+            EmilyBaseUI BaseUI = new EmilyBaseUI(TextChosenColor, HighlightChosenColor);    
             BaseUI.Hideout();
         }
         private void Intro()
