@@ -8,13 +8,19 @@ namespace LITOURGIYA___OBLATION
     {
         private int TextChosenColor;
         private int HighlightChosenColor;
-        public EmilyBaseUI(int textchosencolor, int hightlightchosencolor)
+        private string SaveFile;
+        FileManagement FileManager = new FileManagement();
+        public EmilyBaseUI(int textchosencolor, int hightlightchosencolor, string savefile)
         {
             TextChosenColor = textchosencolor;
             HighlightChosenColor = hightlightchosencolor;
+            SaveFile = savefile;
         }
+        //DATA
+        private int BulletsInMag;
         public void Hideout()
         {
+            UpdateData();
             while (true)
             {
                 string[] thoughts =
@@ -81,9 +87,9 @@ namespace LITOURGIYA___OBLATION
                         {
                             prompts = new string[] { "SANDBAG DUMMY\n", "\n", "A Burlap sack filled to the brim with sand, the top enclosed with a rope.\n", "Few bullet holes already present.\n", "\n" };
                             textcolors = new int[] { 1, 7, 7, 7, 6 };
-                            options = new string[] { "Unholster rifle", "Back" };
-                            specialsymbol = new int[] { 0, 1, 0, 1 };
-                            optioncolors = new int[] { 6, 6 };
+                            options = new string[] { "Unholster rifle", "Load mag", "Back" };
+                            specialsymbol = new int[] { 0, 1, 0, 1, 0, 1 };
+                            optioncolors = new int[] { 6, 6, 6 };
                             ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
                             ConsoleOutput.OptionIndexPlacement = 0;
                             ConsoleOutput.RenderText(prompts, textcolors);
@@ -95,8 +101,23 @@ namespace LITOURGIYA___OBLATION
                                 case 0:
                                     while (esc == false)
                                     {
-                                        prompts = new string[] { "By the weight of the rifle's mag, I guess I still have ", "3 to 5", " bullets left.\n", "Hopefully I'll hit something this time.\n", "\n" };
-                                        textcolors = new int[] { 7, 1, 7, 5, 7 };
+                                        Random Rand = new Random();
+                                        int randvalue = Rand.Next(0, 3);
+                                        string BulletsInMagRange = "";
+                                        switch (randvalue)
+                                        {
+                                            case 0:
+                                                BulletsInMagRange = BulletsInMag + " to " + (BulletsInMag + 3); //Na nejmensim cisle
+                                                break;
+                                            case 1:
+                                                BulletsInMagRange = (BulletsInMag - 3) + " to " + BulletsInMag; //Na nejvyssim
+                                                break;
+                                            case 2:
+                                                BulletsInMagRange = (BulletsInMag - 2) + " to " + (BulletsInMag + 2); //Na prostrednim
+                                                break;
+                                        }
+                                        prompts = new string[] { "[Mag Checking : Uncertain]", ", By the weight of the rifle's mag, I guess I still have ", BulletsInMagRange, " bullets left.\n", "[Precision : Uncertain]", ", Hopefully I'll hit something this time.\n", "\n" };
+                                        textcolors = new int[] { 5, 7, 1, 7, 5, 7, 7 };
                                         options = new string[] { "Aim", "Back" };
                                         specialsymbol = new int[] { 0, 1, 0, 1 };
                                         optioncolors = new int[] { 6, 6 };
@@ -117,18 +138,31 @@ namespace LITOURGIYA___OBLATION
                                                 ConsoleOutput.RenderOptions (options, specialsymbol);
                                                 ConsoleOutput.Run();
                                                 CombatInput CombatInput = new CombatInput();
-                                                bool TargetHit = CombatInput.PrecisionBar(7, 30, 5);
-                                                if (TargetHit == true)
+                                                if (BulletsInMag > 0)
                                                 {
-                                                    prompts = new string[] { "It's a hit! Sand shoots out into the air from the new bullethole and the dummy falls back-first against the wall.\n", "\n" };
-                                                    textcolors = new int[] { 7, 7 };
-                                                    options = new string[] { "Back" };
-                                                    specialsymbol = new int[] { 0, 1 };
-                                                    optioncolors = new int[] { 6 };
+                                                    bool TargetHit = CombatInput.PrecisionBar(7, 30, 5);
+                                                    if (TargetHit == true)
+                                                    {
+                                                        prompts = new string[] { "It's a hit! Sand shoots out into the air from the new bullethole and the dummy falls back-first against the wall.\n", "\n" };
+                                                        textcolors = new int[] { 7, 7 };
+                                                        options = new string[] { "Back" };
+                                                        specialsymbol = new int[] { 0, 1 };
+                                                        optioncolors = new int[] { 6 };
+
+                                                    }
+                                                    else
+                                                    {
+                                                        prompts = new string[] { "The rifle punches me into my shoulder, and the bullet strikes into the wall with a loud bang. Dang it.\n", "\n" };
+                                                        textcolors = new int[] { 7, 7 };
+                                                        options = new string[] { "Back" };
+                                                        specialsymbol = new int[] { 0, 1 };
+                                                        optioncolors = new int[] { 6 };
+                                                    }
+                                                    BulletsInMag--;
                                                 }
                                                 else
                                                 {
-                                                    prompts = new string[] { "The rifle punches me into my shoulder, and the bullet strikes into the wall with a loud bang. Dang it.\n", "\n" };
+                                                    prompts = new string[] { "A loud metallic click is heard, but no bullet is discharged. Did I forget to load my mags?\n", "\n" };
                                                     textcolors = new int[] { 7, 7 };
                                                     options = new string[] { "Back" };
                                                     specialsymbol = new int[] { 0, 1 };
@@ -146,6 +180,20 @@ namespace LITOURGIYA___OBLATION
                                     esc = false;
                                     break;
                                 case 1:
+                                    BulletsInMag += 5;
+                                    prompts = new string[] { "Loaded five 7.62s into the mag.\n", "\n" };
+                                    textcolors = new int[] { 1, 7 };
+                                    options = new string[] { "Back" };
+                                    specialsymbol = new int[] { 0, 1 };
+                                    optioncolors = new int[] { 6 };
+                                    ConsoleOutput.OptionIndexPlacement = 0;
+                                    SelectedIndex = 0;
+                                    ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
+                                    ConsoleOutput.RenderText(prompts, textcolors);
+                                    ConsoleOutput.RenderOptions(options, specialsymbol);
+                                    ConsoleOutput.Run();
+                                    break;
+                                case 2:
                                     esc = true;
                                     break;
                             }
@@ -165,6 +213,14 @@ namespace LITOURGIYA___OBLATION
                 }
             }
         }
+        private void UpdateData()
+        {
+            string[] data = FileManager.LoadData(SaveFile);
+            int.TryParse(data[3].Substring(data[3].IndexOf(' ') + 1), out int refined);
+            BulletsInMag = refined;
+
+        }
+
     }
 }
 /*

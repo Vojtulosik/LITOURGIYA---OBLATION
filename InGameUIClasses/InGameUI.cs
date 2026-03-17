@@ -43,7 +43,7 @@ namespace LITOURGIYA___OBLATION
                 data[1] = "Time: 9:00AM";
                 FileManager.SaveProgress(SoulFilePlacement, data);
             }
-            EmilyBaseUI BaseUI = new EmilyBaseUI(TextChosenColor, HighlightChosenColor);    
+            EmilyBaseUI BaseUI = new EmilyBaseUI(TextChosenColor, HighlightChosenColor, SoulFilePlacement);    
             BaseUI.Hideout();
         }
         private void Intro()
