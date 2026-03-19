@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.Threading.Tasks;
-using System.Text;
-
+﻿
 namespace LITOURGIYA___OBLATION
 {
     internal class Program
@@ -9,13 +6,9 @@ namespace LITOURGIYA___OBLATION
         public static void Main(string[] args)
         {
             Console.ResetColor();
-            if (!Directory.Exists("Savefiles"))
-            {
-                Directory.CreateDirectory("Savefiles");
-            }
-            Directory.SetCurrentDirectory("Savefiles");
+            Directory.CreateDirectory("Savefiles");
             MainMenu MainMenu = new MainMenu();
-            MainMenu.StartupMenu(true);
+            MainMenu.StartupMenu();
         }
 
     }

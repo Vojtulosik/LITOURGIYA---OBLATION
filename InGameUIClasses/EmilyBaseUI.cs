@@ -10,6 +10,7 @@ namespace LITOURGIYA___OBLATION
         private int HighlightChosenColor;
         private string SaveFile;
         FileManagement FileManager = new FileManagement();
+        SoundHub SoundHub = new SoundHub();
         public EmilyBaseUI(int textchosencolor, int hightlightchosencolor, string savefile)
         {
             TextChosenColor = textchosencolor;
@@ -18,8 +19,9 @@ namespace LITOURGIYA___OBLATION
         }
         //DATA
         private int BulletsInMag;
-        public void Hideout()
+        public void Hideout() 
         {
+            SoundHub.PlayFromFile();
             UpdateData();
             while (true)
             {

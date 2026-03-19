@@ -19,7 +19,7 @@ namespace LITOURGIYA___OBLATION
         public string[] SearchFiles()
         {
             string folder = Directory.GetCurrentDirectory();
-            string[] souls = Directory.GetFiles(folder, "*.txt");
+            string[] souls = Directory.GetFiles(Path.Combine(folder, "Savefiles"), "*.txt");
             return souls;
         }
         public string[] ReadFileNames(string[] paths)
@@ -211,7 +211,6 @@ namespace LITOURGIYA___OBLATION
         }
         public string[] LoadAsset(string name)
         {
-            Directory.SetCurrentDirectory("..");
             string dir = Path.Combine("Assets", name + ".txt");
             string[] data = File.ReadAllLines(dir);
             Directory.SetCurrentDirectory("Savefiles");

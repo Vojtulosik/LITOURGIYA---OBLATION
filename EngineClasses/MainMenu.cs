@@ -10,19 +10,22 @@ namespace LITOURGIYA___OBLATION
         FileManagement FileManager = new FileManagement();
         public int HighlightChosenColor = 6;
         public int TextChosenColor = 9;
-        public void StartupMenu(bool withdelay)
+        private bool withdelay = true;
+        public void StartupMenu()
         {
-            Console.CursorVisible = false;
-            string[] options =
+            while (true)
             {
-                "Awake", "Credits", "Options", "Close"
-            };
-            int[] specialsymbol =
-            {
-                0, 1, 0, 1, 0, 1, 0, 1
-            };
-            string[] prompts =
-            {
+                Console.CursorVisible = false;
+                string[] options =
+                {
+                    "Awake", "Credits", "Options", "Close"
+                };
+                int[] specialsymbol =
+                {
+                    0, 1, 0, 1, 0, 1, 0, 1
+                };
+                string[] prompts =
+                {
                 @"
  ██▓     ██▓▄███████▓ ▒█████   █    ██  ██▀██▄    ▄███▄  ██░░██   ██▓ ▄▄▄░  
 ▓██▒    ▓██▒▓  ██▒ ▓▒▒██▒  ██▒ ██  ▓██▒▓██ ▒ ██▒ ██▒ ▀█▒▓██▒ ▒██  ██▒▒████▄░▒   
@@ -35,55 +38,56 @@ namespace LITOURGIYA___OBLATION
     ░  ░ ░               ░ ░     ░        ░           ░  ░   ░ ░           ░  ░
                                                              ░ ░               " + "\n",
                 "                                                           OBLATION, Build : 0.1\n"
-            };
-            int[] textcolors =
-            {
-                7, 8
-            };
-            int[] delay =
+                };
+                int[] textcolors =
+                {
+                    7, 8
+                };
+                int[] delay =
                 {
                     0, 0
                 };
-            if (withdelay == true)
-            {
-                delay[0] = 1500;
-                delay[1] = 500;
-            }
-            else
-            {
-                delay[0] = 0;
-                delay[1] = 0;
-            }
-            bool[] sound =
-            {
-                true, true
-            };
-            ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, delay, sound, TextChosenColor, HighlightChosenColor, specialsymbol, null, null);
-            if (withdelay == true)
-            {
-                ConsoleOutput.RenderText(prompts, textcolors, delay, sound);
-                ConsoleOutput.RenderOptions(options, 1000, 200);
-            }
-            else
-            {
-                ConsoleOutput.RenderText(prompts, textcolors);
-                ConsoleOutput.RenderOptions(options, specialsymbol);
-            }
-            int SelectedIndex = ConsoleOutput.Run();
-            switch (SelectedIndex)
-            {
-                case 0:
-                    SoulFilesUI();
-                    break;
-                case 1:
-                    CreditsUI();
-                    break;
-                case 2:
-                    OptionsUI();
-                    break;
-                case 3:
-                    Environment.Exit(0);
-                    break;
+                if (withdelay == true)
+                {
+                    delay[0] = 1500;
+                    delay[1] = 500;
+                }
+                else
+                {
+                    delay[0] = 0;
+                    delay[1] = 0;
+                }
+                bool[] sound =
+                {
+                    true, true
+                };
+                ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, delay, sound, TextChosenColor, HighlightChosenColor, specialsymbol, null, null);
+                if (withdelay == true)
+                {
+                    ConsoleOutput.RenderText(prompts, textcolors, delay, sound);
+                    ConsoleOutput.RenderOptions(options, 1000, 200);
+                }
+                else
+                {
+                    ConsoleOutput.RenderText(prompts, textcolors);
+                    ConsoleOutput.RenderOptions(options, specialsymbol);
+                }
+                int SelectedIndex = ConsoleOutput.Run();
+                switch (SelectedIndex)
+                {
+                    case 0:
+                        SoulFilesUI();
+                        break;
+                    case 1:
+                        CreditsUI();
+                        break;
+                    case 2:
+                        OptionsUI();
+                        break;
+                    case 3:
+                        Environment.Exit(0);
+                        break;
+                }
             }
         }
 
@@ -118,7 +122,7 @@ namespace LITOURGIYA___OBLATION
             switch (SelectedIndex)
             {
                 case 0:
-                    StartupMenu(false);
+                    withdelay = false;
                     break;
             }
         }
@@ -186,7 +190,7 @@ namespace LITOURGIYA___OBLATION
                 int MenuIndex = options.Length - 1;
                 if (MenuIndex == SelectedIndex)
                 {
-                    StartupMenu(false);
+                    withdelay = false;
                 }
                 else if (MenuIndex - 1 == SelectedIndex)
                 {
@@ -213,7 +217,7 @@ namespace LITOURGIYA___OBLATION
                         SoulFilesUI();
                         break;
                     case 1:
-                        StartupMenu(false);
+                        withdelay = false;
                         break;
                 }
             }
@@ -229,11 +233,11 @@ namespace LITOURGIYA___OBLATION
                 2, 3, 2, 3, 0, 1, 0, 1
             };
             string[] prompts =
-{
+            {
                "Press ", "ENTER", ", to interact.\n"
             };
             int[] textcolors =
-{
+            {
                 7, 1, 7
             };
             ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, null, null);
@@ -275,7 +279,7 @@ namespace LITOURGIYA___OBLATION
                         ConsoleOutput.RenderOptions(options, specialsymbol);
                         break;
                     case 3:
-                        StartupMenu(false);
+                        withdelay = false;
                         break;
                 }
             }
