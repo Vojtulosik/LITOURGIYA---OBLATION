@@ -1,6 +1,8 @@
-﻿using System;
+﻿using LITOURGIYA___OBLATION.EngineClasses;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace LITOURGIYA___OBLATION
 {
@@ -9,7 +11,6 @@ namespace LITOURGIYA___OBLATION
         private int TextChosenColor;
         private int HighlightChosenColor;
         private string SaveFile;
-        FileManagement FileManager = new FileManagement();
         SoundHub SoundHub = new SoundHub();
         public EmilyBaseUI(int textchosencolor, int hightlightchosencolor, string savefile)
         {
@@ -17,12 +18,13 @@ namespace LITOURGIYA___OBLATION
             HighlightChosenColor = hightlightchosencolor;
             SaveFile = savefile;
         }
+        FileManagement FileManager = new FileManagement();
         //DATA
         private int BulletsInMag;
         public void Hideout() 
         {
-            SoundHub.PlayFromFile();
-            UpdateData();
+            //SoundHub.PlayFromFile();
+            DataStructure Data = UpdateData();
             while (true)
             {
                 string[] thoughts =
@@ -106,6 +108,7 @@ namespace LITOURGIYA___OBLATION
                                         Random Rand = new Random();
                                         int randvalue = Rand.Next(0, 3);
                                         string BulletsInMagRange = "";
+                                        BulletsInMag = Data.BulletsInMag;
                                         switch (randvalue)
                                         {
                                             case 0:
@@ -215,12 +218,10 @@ namespace LITOURGIYA___OBLATION
                 }
             }
         }
-        private void UpdateData()
+        private DataStructure UpdateData()
         {
-            string[] data = FileManager.LoadData(SaveFile);
-            int.TryParse(data[3].Substring(data[3].IndexOf(' ') + 1), out int refined);
-            BulletsInMag = refined;
-
+            DataStructure data = FileManager.LoadData(SaveFile);
+            return data;
         }
 
     }

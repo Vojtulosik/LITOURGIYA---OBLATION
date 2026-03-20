@@ -1,9 +1,11 @@
-﻿using System;
+﻿using LITOURGIYA___OBLATION.EngineClasses;
+using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using System.Security;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LITOURGIYA___OBLATION
 {
@@ -11,15 +13,31 @@ namespace LITOURGIYA___OBLATION
     {
         public int AmountOfSouls;
 
-        public void SaveProgress(string path, string[] data)
+        public void SaveProgress(string path, DataStructure data)
         {
-            File.WriteAllLines(path, data);
-            File.Move(path, Path.GetFileNameWithoutExtension(path).Substring(0, Path.GetFileNameWithoutExtension(path).IndexOf("-") + 2) + "Day " + data[0].Substring(data[0].IndexOf(":") + 1) + ".txt");
+            string folder = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            string FileName = "[" + data.FileCreationHour + "∶" + data.FileCreationMinutes + ", " + data.FileCreationDate + "] “" + data.FileCreationName + "” - " + "Day " + data.InGameDay + ".json";
+            folder = Path.Combine(folder, FileName);
+            string json = JsonSerializer.Serialize(data);
+            File.WriteAllText(folder, json);
+            if (!string.IsNullOrEmpty(path) && File.Exists(path) && path != folder)
+            {
+                File.Delete(path);
+            }
+        }
+        public DataStructure LoadData(string path)
+        {
+            string json = File.ReadAllText(path);
+            return JsonSerializer.Deserialize<DataStructure>(json);
         }
         public string[] SearchFiles()
         {
             string folder = Directory.GetCurrentDirectory();
-            string[] souls = Directory.GetFiles(Path.Combine(folder, "Savefiles"), "*.txt");
+            string[] souls = Directory.GetFiles(Path.Combine(folder, "Savefiles"), "*.json");
             return souls;
         }
         public string[] ReadFileNames(string[] paths)
@@ -67,35 +85,45 @@ namespace LITOURGIYA___OBLATION
                 case 0:
                     DateTime now = DateTime.Now;
                     string Time;
+                    string hour;
+                    string minute;
                     if (now.Hour < 10)
                     {
                         Time = "0" + now.Hour + "∶";
+                        hour = "0" + now.Hour;
                     }
                     else
                     {
                         Time = "" + now.Hour + "∶";
+                        hour = "" + now.Hour;
                     }
                     if (now.Minute < 10)
                     {
                         Time = Time + "0" + now.Minute;
+                        minute = "0" + now.Minute;
                     }
                     else
                     {
                         Time = Time + now.Minute;
+                        minute = "" + now.Minute;
                     }
                     string Filename = "[" + Time + ", " + now.Day + "." + now.Month + "." + now.Year + "]" + " “" + UserInput + "” - Day 0";
-                    string[] datastructure =
+                    DataStructure DataStructure = new DataStructure()
                     {
-                        //First branch == Progression status data
-                        "InGameday: 0",
-                        "Time: 9:00AM",
-                        "",
-                        //Second branch == Emily status/config data
-                        "BulletsInMag: 5",
-                        "",
-                        //Third branch == Loot data
+                        InGameDay = 0,
+                        Time = "9:00AM",
+                        BulletsInMag = 5,
+                        FileCreationHour = hour,
+                        FileCreationMinutes = minute,
+                        FileCreationDate = now.Day + "." + now.Month + "." + now.Year,
+                        FileCreationName = UserInput
                     };
-                    File.WriteAllLines(Filename + ".txt", datastructure);
+                    string json = JsonSerializer.Serialize(DataStructure, new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    });
+                    string filedir = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
+                    File.WriteAllText(Path.Combine(filedir, Filename) + ".json", json);
                     break;
             }
         }
@@ -201,13 +229,8 @@ namespace LITOURGIYA___OBLATION
                             }
                             break;
                     }
-                    break;  
+                    break;
             }
-        }
-        public string[] LoadData(string path)
-        {
-            string[] data = File.ReadAllLines(path);
-            return data;
         }
         public string[] LoadAsset(string name)
         {

@@ -14,7 +14,9 @@ namespace LITOURGIYA___OBLATION
         }
         public void PlayFromFile()
         {
-            string file = Path.Combine("Assets", "OBLATION-InCombatOST (Drive Injector - CRY.NN)", ".mp3");
+
+            string file = Path.Combine(Directory.GetCurrentDirectory(), "Assets");
+            file = Path.Combine(file, "OBLATION-InCombatOST (Drive Injector - CRY.NN).mp3");
             var audioFile = new AudioFileReader(file);
             var outputDevice = new WaveOutEvent();
 

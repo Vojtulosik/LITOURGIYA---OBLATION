@@ -36,7 +36,7 @@ namespace LITOURGIYA___OBLATION
 ░ ░ ▒  ░ ▒ ░    ░      ░ ▒ ▒░ ░░▒░ ░ ░   ░▒ ░ ▒░  ░░  ░  ▒ ░ ▓██ ░▒░   ▒   ▒▒ ░
   ░ ░    ▒ ░  ░      ░ ░ ░ ▒   ░░░ ░ ░   ░░   ░ ░ ░   ░  ▒ ░ ▒ ▒ ░░    ░   ▒   
     ░  ░ ░               ░ ░     ░        ░           ░  ░   ░ ░           ░  ░
-                                                             ░ ░               " + "\n",
+                                                             ░                " + "\n",
                 "                                                           OBLATION, Build : 0.1\n"
                 };
                 int[] textcolors =

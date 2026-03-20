@@ -1,15 +1,17 @@
-﻿using System;
+﻿using LITOURGIYA___OBLATION.EngineClasses;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Serialization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LITOURGIYA___OBLATION
 {
     public class InGameUI 
     {
         private string SoulFilePlacement;
-        private string[] Data;
+        private DataStructure Data = new DataStructure();
         private int IngameDay;
         private int TextChosenColor;
         private int HighlightChosenColor;
@@ -24,25 +26,24 @@ namespace LITOURGIYA___OBLATION
         public void Initialisation()
         {
             Data = FileManager.LoadData(SoulFilePlacement);
-            string DataCut = Data[0].Substring(Data[0].IndexOf(":") + 1);
-            int.TryParse(DataCut, out IngameDay);
-            if (IngameDay == 0)
+            if (Data.InGameDay == 0)
             {
-                Intro();
+                //Intro();
                 Console.Clear();
-                LoadNotes NoteUI = new LoadNotes(HighlightChosenColor, HighlightChosenColor);
-                NoteUI.Render(0);
+                /*LoadNotes NoteUI = new LoadNotes(HighlightChosenColor, HighlightChosenColor);
+                NoteUI.Render(0);*/
                 string[] options = { "Close" };
                 int[] specialsymbols = { 0, 1 };
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, null, null, null, null, TextChosenColor, HighlightChosenColor, specialsymbols, null, null);
                 ConsoleOutput.RenderOptions(options, specialsymbols);
                 ConsoleOutput.Run();
                 Console.Clear();
-                string[] data = File.ReadAllLines(SoulFilePlacement);
-                data[0] = "IngameDay: 1";
-                data[1] = "Time: 9:00AM";
-                FileManager.SaveProgress(SoulFilePlacement, data);
+                Data.InGameDay = 1;
+                Data.Time = "9:00AM";
+                FileManager.SaveProgress(SoulFilePlacement, Data);
             }
+            SoulFilePlacement = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
+            SoulFilePlacement = Path.Combine(SoulFilePlacement, "[" + Data.FileCreationHour + "∶" + Data.FileCreationMinutes + ", " + Data.FileCreationDate + "] “" + Data.FileCreationName + "” - " + "Day " + Data.InGameDay + ".json");
             EmilyBaseUI BaseUI = new EmilyBaseUI(TextChosenColor, HighlightChosenColor, SoulFilePlacement);    
             BaseUI.Hideout();
         }
