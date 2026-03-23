@@ -1,4 +1,5 @@
 ﻿using LITOURGIYA___OBLATION.EngineClasses;
+using NAudio.Codecs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,12 +20,14 @@ namespace LITOURGIYA___OBLATION
             SaveFile = savefile;
         }
         FileManagement FileManager = new FileManagement();
+        Random Rand = new Random();
         //DATA
         private int BulletsInMag;
         public void Hideout() 
         {
             //SoundHub.PlayFromFile();
             DataStructure Data = UpdateData();
+            BulletsInMag = Data.BulletsInMag;
             while (true)
             {
                 string[] thoughts =
@@ -105,22 +108,21 @@ namespace LITOURGIYA___OBLATION
                                 case 0:
                                     while (esc == false)
                                     {
-                                        Random Rand = new Random();
-                                        int randvalue = Rand.Next(0, 3);
                                         string BulletsInMagRange = "";
-                                        BulletsInMag = Data.BulletsInMag;
-                                        switch (randvalue)
+                                        int leftOffset = Rand.Next(0, 4);
+                                        int rightOffset = Rand.Next(0, 4);
+                                        int min = BulletsInMag - leftOffset;
+                                        int max = BulletsInMag + rightOffset;
+                                        if (min < 0)
                                         {
-                                            case 0:
-                                                BulletsInMagRange = BulletsInMag + " to " + (BulletsInMag + 3); //Na nejmensim cisle
-                                                break;
-                                            case 1:
-                                                BulletsInMagRange = (BulletsInMag - 3) + " to " + BulletsInMag; //Na nejvyssim
-                                                break;
-                                            case 2:
-                                                BulletsInMagRange = (BulletsInMag - 2) + " to " + (BulletsInMag + 2); //Na prostrednim
-                                                break;
+                                            min = 0;
+                                            leftOffset = 0;
                                         }
+                                        if (max > 15) max = 15;
+                                        if (leftOffset + rightOffset == 0) max = max + Rand.Next(1, 4);
+
+                                        BulletsInMagRange = (min) + " to " + (max);
+
                                         prompts = new string[] { "[Mag Checking : Uncertain]", ", By the weight of the rifle's mag, I guess I still have ", BulletsInMagRange, " bullets left.\n", "[Precision : Uncertain]", ", Hopefully I'll hit something this time.\n", "\n" };
                                         textcolors = new int[] { 5, 7, 1, 7, 5, 7, 7 };
                                         options = new string[] { "Aim", "Back" };
@@ -163,6 +165,10 @@ namespace LITOURGIYA___OBLATION
                                                         specialsymbol = new int[] { 0, 1 };
                                                         optioncolors = new int[] { 6 };
                                                     }
+                                                    if (Data.FirstAimPractise == false)
+                                                    {
+                                                        Data.FirstAimPractise = true;
+                                                    }
                                                     BulletsInMag--;
                                                 }
                                                 else
@@ -203,6 +209,19 @@ namespace LITOURGIYA___OBLATION
                                     break;
                             }
                         }
+                        break;
+                    case 14:
+                        prompts = new string[] { "Test", "\n" };
+                        textcolors = new int[] { 6, 7 };
+                        options = new string[] { "Back" };
+                        specialsymbol = new int[] { 0, 1 };
+                        optioncolors = new int[] { 6 };
+                        ConsoleOutput.OptionIndexPlacement = 0;
+                        SelectedIndex = 0;
+                        ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
+                        ConsoleOutput.RenderText(prompts, textcolors);
+                        ConsoleOutput.RenderOptions(options, specialsymbol);
+                        ConsoleOutput.Run();
                         break;
                     case 17:
                         prompts = new string[] { "I'm pretty sure I wanted to try something before leaving.\n", "\n" };

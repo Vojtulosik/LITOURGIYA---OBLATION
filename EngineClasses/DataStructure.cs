@@ -8,6 +8,7 @@ namespace LITOURGIYA___OBLATION.EngineClasses
     {
         //First branch == Progression status data
         public int InGameDay { get; set; }
+        public bool FirstAimPractise { get; set; }
         public string Time { get; set; }
         //Second branch == Emily status/config data
         public string FileCreationHour { get; set; }

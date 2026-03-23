@@ -112,6 +112,7 @@ namespace LITOURGIYA___OBLATION
                     {
                         InGameDay = 0,
                         Time = "9:00AM",
+                        FirstAimPractise = false,
                         BulletsInMag = 5,
                         FileCreationHour = hour,
                         FileCreationMinutes = minute,
