@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LITOURGIYA___OBLATION
 {
@@ -12,32 +13,36 @@ namespace LITOURGIYA___OBLATION
         private int TextChosenColor;
         private int HighlightChosenColor;
         private string SaveFile;
-        SoundHub SoundHub = new SoundHub();
         public EmilyBaseUI(int textchosencolor, int hightlightchosencolor, string savefile)
         {
             TextChosenColor = textchosencolor;
             HighlightChosenColor = hightlightchosencolor;
             SaveFile = savefile;
         }
+        SoundHub SoundHub = new SoundHub();
         FileManagement FileManager = new FileManagement();
         Random Rand = new Random();
+        AssetStation AssetStation = new AssetStation();
         //DATA
         private int BulletsInMag;
+        private int MoodStatus;
+        private int HungerStatus;
+        private int ThirstStatus;
+        private int HeatStatus;
+        private int ColdStatus;
+        private int EnergyStatus;
         public void Hideout() 
         {
+            LoadNotes NoteLoader = new LoadNotes(HighlightChosenColor, TextChosenColor);
             //SoundHub.PlayFromFile();
             DataStructure Data = UpdateData();
-            BulletsInMag = Data.BulletsInMag;
+            Data = SetData(Data);
             while (true)
             {
                 string[] thoughts =
                 {
                     "   The lights flicker, humming quietly above my head, halls are quiet today.\n",
                     "   I should test the rifle before going out.\n"
-                };
-                string[] sensations =
-                {
-                    "   Energised  |  Content\n"
                 };
                 string[] options =
                 {
@@ -59,7 +64,7 @@ namespace LITOURGIYA___OBLATION
                     6, 5, 7, 7,
                     6, 7, 7, 7,
                     6, 7
-                };
+                };  
                 int[] specialsymbol =
                 {
                     7, 7, 5, 6,
@@ -72,13 +77,20 @@ namespace LITOURGIYA___OBLATION
                     5, 6, 4, 4,
                     7, 7, 5, 6
                 };
+                if (Data.FirstAimPractise == true)
+                {
+                    optioncolors[9] = 7;
+                    specialsymbol[19] = 6;
+                    optioncolors[optioncolors.Length - 1] = 5;
+                    specialsymbol[specialsymbol.Length - 1] = 8;
+                }
                 string[] prompts =
                 {
-                    "ORCHIDEJ POWER PLANT", " - ", "Hideout\n", "Day 1, 9:00 AM\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", sensations[0], "\n"
+                    "ORCHIDEJ POWER PLANT", " - ", "Hideout\n", "Day 1, 9:00 AM\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", "   " + AssetStation.SanityParameters[MoodStatus], " | " + AssetStation.EnergyParameters[EnergyStatus] + "\n", "\n"
                 };
                 int[] textcolors =
                 {
-                    4, 7, 6, 6, 7, 1, 7, 7, 7, 1, 7, 7
+                    4, 7, 6, 6, 7, 1, 7, 7, 7, 1, 7, 7, 7
                 };
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
                 ConsoleOutput.OptionIndexPlacement = 1;
@@ -168,6 +180,7 @@ namespace LITOURGIYA___OBLATION
                                                     if (Data.FirstAimPractise == false)
                                                     {
                                                         Data.FirstAimPractise = true;
+                                                        NoteLoader.Render(1);
                                                     }
                                                     BulletsInMag--;
                                                 }
@@ -242,7 +255,12 @@ namespace LITOURGIYA___OBLATION
             DataStructure data = FileManager.LoadData(SaveFile);
             return data;
         }
-
+        private DataStructure SetData(DataStructure Data)
+        {
+            BulletsInMag = Data.BulletsInMag;
+            MoodStatus = Data.MoodStatus;
+            return Data;
+        }
     }
 }
 /*

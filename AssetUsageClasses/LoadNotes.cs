@@ -24,6 +24,9 @@ namespace LITOURGIYA___OBLATION
                 case 0:
                     notename = "JOURNAL Entry 01 - Settlement";
                     break;
+                case 1:
+                    notename = "COMMENT Entry 01 - First aim practise";
+                    break;
             }
             string[] prompt = FileManager.LoadAsset(notename);
             ConsoleOutput.RenderNote(prompt, true);

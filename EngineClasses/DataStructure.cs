@@ -10,12 +10,14 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public int InGameDay { get; set; }
         public bool FirstAimPractise { get; set; }
         public string Time { get; set; }
-        //Second branch == Emily status/config data
+        //Second branch == config data
         public string FileCreationHour { get; set; }
         public string FileCreationMinutes { get; set; }
         public string FileCreationDate { get; set; }
         public string FileCreationName { get; set; }
         //Third branch == Loot data
         public int BulletsInMag { get; set; }
+        //Fourth branch == Emily status
+        public int MoodStatus { get; set; }
     }
 }
