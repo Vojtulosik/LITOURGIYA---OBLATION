@@ -1,4 +1,4 @@
-EMILY : # 
-Hm... Not a total lost cause. Still... It's just an unmoving sandbag. I should head for the left section while it's still morning. The earlier it is, the less active they are. # 
+<green>EMILY <green>: # 
+Hm... Not a total lost cause. Still... It's just an <yellow>unmoving <yellow>sandbag. I should head for the <white>left <white>section while it's still <cyan>morning. <white>The <white>earlier <white>it <white>is, the <yellow>less <yellow>active <red>they <red>are. # 
 # 
-I'm thinking, if I find something usefull, like... Any tools or scrap in the garage, I could maybe turn the old worktable into a something useful. Maybe a workbench? Since the rifle's iron sight is already off, I need to fix that.
+I'm thinking, if I find <white>something <white>usefull, like... Any <cyan>tools or <cyan>scrap in the <white>garage, I could maybe turn the <magenta>old <magenta>worktable into a something <white>useful. Maybe a <magenta>workbench? Since the <yellow>rifle's iron sight is already off, <white>I <white>need <white>to <white>fix <white>that. # 

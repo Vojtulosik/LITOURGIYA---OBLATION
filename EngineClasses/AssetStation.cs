@@ -17,5 +17,6 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public string[] SanityParameters = { "Content", "Stable", "Uneasy", "Disturbed", "Panicking" };
         public string[] ColdParameters = { "Cold", "Freezing" }; //Level 0 is blank
         public string[] HeatParameters = { "Sweating", "Overheating" }; //Level 0 is blank
+        public string[] PainParameters = { "Sore", "Aching", "Sharp pain", "Agonizing", "Unbearable" }; //Level 0 is blank
     }
 }

@@ -84,6 +84,7 @@ namespace LITOURGIYA___OBLATION
                     optioncolors[optioncolors.Length - 1] = 5;
                     specialsymbol[specialsymbol.Length - 1] = 8;
                 }
+                MoodStatus = 3;
                 string[] prompts =
                 {
                     "ORCHIDEJ POWER PLANT", " - ", "Hideout\n", "Day 1, 9:00 AM\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", "   " + AssetStation.SanityParameters[MoodStatus], " | " + AssetStation.EnergyParameters[EnergyStatus] + "\n", "\n"
@@ -167,7 +168,21 @@ namespace LITOURGIYA___OBLATION
                                                         options = new string[] { "Back" };
                                                         specialsymbol = new int[] { 0, 1 };
                                                         optioncolors = new int[] { 6 };
-
+                                                        ConsoleOutput.RenderText(prompts, textcolors);
+                                                        ConsoleOutput.RenderOptions(options, specialsymbol);
+                                                        ConsoleOutput.Run();
+                                                        if (Data.FirstAimPractise == false)
+                                                        {
+                                                            Data.FirstAimPractise = true;
+                                                            Console.Clear();
+                                                            NoteLoader.Render(1);
+                                                            options = new string[] { "Close" };
+                                                            specialsymbol = new int[] { 0, 1 };
+                                                            ConsoleOutput.UpdateValues(null, null, options, specialsymbol);
+                                                            ConsoleOutput.RenderOptions(options, specialsymbol);
+                                                            ConsoleOutput.Run();
+                                                        }
+                                                        BulletsInMag--;
                                                     }
                                                     else
                                                     {
@@ -176,13 +191,10 @@ namespace LITOURGIYA___OBLATION
                                                         options = new string[] { "Back" };
                                                         specialsymbol = new int[] { 0, 1 };
                                                         optioncolors = new int[] { 6 };
+                                                        ConsoleOutput.RenderText(prompts, textcolors);
+                                                        ConsoleOutput.RenderOptions(options, specialsymbol);
+                                                        ConsoleOutput.Run();
                                                     }
-                                                    if (Data.FirstAimPractise == false)
-                                                    {
-                                                        Data.FirstAimPractise = true;
-                                                        NoteLoader.Render(1);
-                                                    }
-                                                    BulletsInMag--;
                                                 }
                                                 else
                                                 {
@@ -191,10 +203,10 @@ namespace LITOURGIYA___OBLATION
                                                     options = new string[] { "Back" };
                                                     specialsymbol = new int[] { 0, 1 };
                                                     optioncolors = new int[] { 6 };
+                                                    ConsoleOutput.RenderText(prompts, textcolors);
+                                                    ConsoleOutput.RenderOptions(options, specialsymbol);
+                                                    ConsoleOutput.Run();
                                                 }
-                                                ConsoleOutput.RenderText(prompts, textcolors);
-                                                ConsoleOutput.RenderOptions(options, specialsymbol);
-                                                ConsoleOutput.Run();
                                                 break;
                                             case 1:
                                                 esc = true;

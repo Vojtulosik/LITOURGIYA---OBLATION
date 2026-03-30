@@ -318,7 +318,6 @@ namespace LITOURGIYA___OBLATION
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
             }
-            //Console.ForegroundColor =
             //# Signals for another line in the .txt files
         }
         public int Run()
