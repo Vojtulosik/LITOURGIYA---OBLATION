@@ -19,5 +19,10 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public int BulletsInMag { get; set; }
         //Fourth branch == Emily status
         public int MoodStatus { get; set; }
+        public int PainStatus { get; set; }
+        public int HungerStatus { get; set; }
+        public int ThirstStatus { get; set; }
+        public int HeatStatus { get; set; }
+        public int ColdStatus { get; set; }
     }
 }

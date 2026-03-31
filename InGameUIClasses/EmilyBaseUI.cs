@@ -31,6 +31,7 @@ namespace LITOURGIYA___OBLATION
         private int HeatStatus;
         private int ColdStatus;
         private int EnergyStatus;
+        private int PainStatus;
         public void Hideout() 
         {
             LoadNotes NoteLoader = new LoadNotes(HighlightChosenColor, TextChosenColor);
@@ -85,13 +86,14 @@ namespace LITOURGIYA___OBLATION
                     specialsymbol[specialsymbol.Length - 1] = 8;
                 }
                 MoodStatus = 3;
+                string Sensations = GrabSensations();
                 string[] prompts =
                 {
-                    "ORCHIDEJ POWER PLANT", " - ", "Hideout\n", "Day 1, 9:00 AM\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", "   " + AssetStation.SanityParameters[MoodStatus], " | " + AssetStation.EnergyParameters[EnergyStatus] + "\n", "\n"
+                    "ORCHIDEJ POWER PLANT", " - ", "Hideout\n", "Day 1, 9:00 AM\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", "  " + Sensations + "\n", "\n"
                 };
                 int[] textcolors =
                 {
-                    4, 7, 6, 6, 7, 1, 7, 7, 7, 1, 7, 7, 7
+                    4, 7, 6, 6, 7, 1, 7, 7, 7, 1, 7, 7
                 };
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
                 ConsoleOutput.OptionIndexPlacement = 1;
@@ -271,7 +273,22 @@ namespace LITOURGIYA___OBLATION
         {
             BulletsInMag = Data.BulletsInMag;
             MoodStatus = Data.MoodStatus;
+            PainStatus = Data.PainStatus;
+            HungerStatus = Data.HungerStatus;
+            ThirstStatus = Data.ThirstStatus;
+            HeatStatus = Data.HeatStatus;
+            ColdStatus = Data.ColdStatus;
             return Data;
+        }
+        private string GrabSensations()
+        {
+            string sensations = AssetStation.SanityParameters[MoodStatus] + " | " + AssetStation.EnergyParameters[EnergyStatus];
+            if (PainStatus > 0) sensations += " | " + AssetStation.PainParameters[PainStatus];
+            if (ThirstStatus > 0) sensations += " | " + AssetStation.ThirstParameters[ThirstStatus];
+            if (HungerStatus > 0) sensations += " | " + AssetStation.HungerParameters[HungerStatus];
+            if (ColdStatus > 0) sensations += " | " + AssetStation.ColdParameters[HeatStatus];
+            if (HeatStatus > 0) sensations += " | " + AssetStation.HeatParameters[HeatStatus];
+            return sensations;
         }
     }
 }
