@@ -6,7 +6,6 @@ namespace LITOURGIYA___OBLATION
         public static void Main(string[] args)
         {
             Console.ResetColor();
-            Directory.CreateDirectory("Savefiles");
             MainMenu MainMenu = new MainMenu();
             MainMenu.StartupMenu();
         }

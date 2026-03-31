@@ -24,5 +24,6 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public int ThirstStatus { get; set; }
         public int HeatStatus { get; set; }
         public int ColdStatus { get; set; }
+        public int EnergyStatus { get; set; }
     }
 }

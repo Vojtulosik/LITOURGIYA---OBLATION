@@ -23,21 +23,11 @@ namespace LITOURGIYA___OBLATION
         FileManagement FileManager = new FileManagement();
         Random Rand = new Random();
         AssetStation AssetStation = new AssetStation();
-        //DATA
-        private int BulletsInMag;
-        private int MoodStatus;
-        private int HungerStatus;
-        private int ThirstStatus;
-        private int HeatStatus;
-        private int ColdStatus;
-        private int EnergyStatus;
-        private int PainStatus;
         public void Hideout() 
         {
             LoadNotes NoteLoader = new LoadNotes(HighlightChosenColor, TextChosenColor);
             //SoundHub.PlayFromFile();
             DataStructure Data = UpdateData();
-            Data = SetData(Data);
             while (true)
             {
                 string[] thoughts =
@@ -85,8 +75,7 @@ namespace LITOURGIYA___OBLATION
                     optioncolors[optioncolors.Length - 1] = 5;
                     specialsymbol[specialsymbol.Length - 1] = 8;
                 }
-                MoodStatus = 3;
-                string Sensations = GrabSensations();
+                string Sensations = GrabSensations(Data);
                 string[] prompts =
                 {
                     "ORCHIDEJ POWER PLANT", " - ", "Hideout\n", "Day 1, 9:00 AM\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", "  " + Sensations + "\n", "\n"
@@ -126,8 +115,8 @@ namespace LITOURGIYA___OBLATION
                                         string BulletsInMagRange = "";
                                         int leftOffset = Rand.Next(0, 4);
                                         int rightOffset = Rand.Next(0, 4);
-                                        int min = BulletsInMag - leftOffset;
-                                        int max = BulletsInMag + rightOffset;
+                                        int min = Data.BulletsInMag - leftOffset;
+                                        int max = Data.BulletsInMag + rightOffset;
                                         if (min < 0)
                                         {
                                             min = 0;
@@ -160,7 +149,7 @@ namespace LITOURGIYA___OBLATION
                                                 ConsoleOutput.RenderOptions (options, specialsymbol);
                                                 ConsoleOutput.Run();
                                                 CombatInput CombatInput = new CombatInput();
-                                                if (BulletsInMag > 0)
+                                                if (Data.BulletsInMag > 0)
                                                 {
                                                     bool TargetHit = CombatInput.PrecisionBar(7, 30, 5);
                                                     if (TargetHit == true)
@@ -184,7 +173,7 @@ namespace LITOURGIYA___OBLATION
                                                             ConsoleOutput.RenderOptions(options, specialsymbol);
                                                             ConsoleOutput.Run();
                                                         }
-                                                        BulletsInMag--;
+                                                        Data.BulletsInMag--;
                                                     }
                                                     else
                                                     {
@@ -218,7 +207,7 @@ namespace LITOURGIYA___OBLATION
                                     esc = false;
                                     break;
                                 case 1:
-                                    BulletsInMag += 5;
+                                    Data.BulletsInMag += 5;
                                     prompts = new string[] { "Loaded five 7.62s into the mag.\n", "\n" };
                                     textcolors = new int[] { 1, 7 };
                                     options = new string[] { "Back" };
@@ -240,27 +229,60 @@ namespace LITOURGIYA___OBLATION
                     case 14:
                         prompts = new string[] { "Test", "\n" };
                         textcolors = new int[] { 6, 7 };
-                        options = new string[] { "Back" };
-                        specialsymbol = new int[] { 0, 1 };
+                        options = new string[] { "Back", "Save progress" };
+                        specialsymbol = new int[] { 0, 1, 0, 1 };
                         optioncolors = new int[] { 6 };
                         ConsoleOutput.OptionIndexPlacement = 0;
                         SelectedIndex = 0;
                         ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
                         ConsoleOutput.RenderText(prompts, textcolors);
                         ConsoleOutput.RenderOptions(options, specialsymbol);
-                        ConsoleOutput.Run();
+                        SelectedIndex = ConsoleOutput.Run();
+                        switch (SelectedIndex)
+                        {
+                            case 1:
+                                FileManager.SaveProgress(SaveFile, Data);
+                                prompts = new string[] { "Data has been saved.", "\n" };
+                                textcolors = new int[] { 6, 7 };
+                                options = new string[] { "Back" };
+                                specialsymbol = new int[] { 0, 1 };
+                                optioncolors = new int[] { 6 };
+                                ConsoleOutput.OptionIndexPlacement = 0;
+                                SelectedIndex = 0;
+                                ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
+                                ConsoleOutput.RenderText(prompts, textcolors);
+                                ConsoleOutput.RenderOptions(options, specialsymbol);
+                                ConsoleOutput.Run();
+                                break;
+                        }
                         break;
                     case 17:
-                        prompts = new string[] { "I'm pretty sure I wanted to try something before leaving.\n", "\n" };
-                        textcolors = new int[] { 7, 7 };
-                        options = new string[] { "back" };
-                        specialsymbol = new int[] { 0, 1 };
-                        ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
-                        ConsoleOutput.OptionIndexPlacement = 0;
-                        ConsoleOutput.RenderText(prompts, textcolors);
-                        ConsoleOutput.RenderOptions(options, specialsymbol);
-                        SelectedIndex = ConsoleOutput.Run();
-                        break;
+                        if (Data.FirstAimPractise == true)
+                        {
+                            prompts = new string[] { "There aren't any apparent changes outside the mettalic door, only my shiver on the cold breeze and two corridors on each side. I remember that the right one leads outside. \n", "\n" };
+                            textcolors = new int[] { 7, 7 };
+                            options = new string[] { "Enter your Hideout", "Go towards the left corridor", "Go towards the right corridor" };
+                            specialsymbol = new int[] { 0, 1, 0, 1, 0, 1 };
+                            ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
+                            ConsoleOutput.OptionIndexPlacement = 0;
+                            ConsoleOutput.RenderText(prompts, textcolors);
+                            ConsoleOutput.RenderOptions(options, specialsymbol);
+                            SelectedIndex = ConsoleOutput.Run();
+                            break;
+                        }
+                        else
+                        {
+                            prompts = new string[] { "I'm pretty sure I wanted to try something before leaving.\n", "\n" };
+                            textcolors = new int[] { 7, 7 };
+                            options = new string[] { "back" };
+                            specialsymbol = new int[] { 0, 1 };
+                            ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
+                            ConsoleOutput.OptionIndexPlacement = 0;
+                            ConsoleOutput.RenderText(prompts, textcolors);
+                            ConsoleOutput.RenderOptions(options, specialsymbol);
+                            SelectedIndex = ConsoleOutput.Run();
+                            break;
+                        }
                 }
             }
         }
@@ -269,25 +291,14 @@ namespace LITOURGIYA___OBLATION
             DataStructure data = FileManager.LoadData(SaveFile);
             return data;
         }
-        private DataStructure SetData(DataStructure Data)
+        private string GrabSensations(DataStructure data)
         {
-            BulletsInMag = Data.BulletsInMag;
-            MoodStatus = Data.MoodStatus;
-            PainStatus = Data.PainStatus;
-            HungerStatus = Data.HungerStatus;
-            ThirstStatus = Data.ThirstStatus;
-            HeatStatus = Data.HeatStatus;
-            ColdStatus = Data.ColdStatus;
-            return Data;
-        }
-        private string GrabSensations()
-        {
-            string sensations = AssetStation.SanityParameters[MoodStatus] + " | " + AssetStation.EnergyParameters[EnergyStatus];
-            if (PainStatus > 0) sensations += " | " + AssetStation.PainParameters[PainStatus];
-            if (ThirstStatus > 0) sensations += " | " + AssetStation.ThirstParameters[ThirstStatus];
-            if (HungerStatus > 0) sensations += " | " + AssetStation.HungerParameters[HungerStatus];
-            if (ColdStatus > 0) sensations += " | " + AssetStation.ColdParameters[HeatStatus];
-            if (HeatStatus > 0) sensations += " | " + AssetStation.HeatParameters[HeatStatus];
+            string sensations = AssetStation.SanityParameters[data.MoodStatus] + " | " + AssetStation.EnergyParameters[data.EnergyStatus];
+            if (data.PainStatus > 0) sensations += " | " + AssetStation.PainParameters[data.PainStatus];
+            if (data.ThirstStatus > 0) sensations += " | " + AssetStation.ThirstParameters[data.ThirstStatus];
+            if (data.HungerStatus > 0) sensations += " | " + AssetStation.HungerParameters[data.HungerStatus];
+            if (data.ColdStatus > 0) sensations += " | " + AssetStation.ColdParameters[data.ColdStatus];
+            if (data.HeatStatus > 0) sensations += " | " + AssetStation.HeatParameters[data.HeatStatus];
             return sensations;
         }
     }
