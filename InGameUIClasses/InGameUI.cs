@@ -30,8 +30,8 @@ namespace LITOURGIYA___OBLATION
             {
                 //Intro();
                 Console.Clear();
-                /*LoadNotes NoteUI = new LoadNotes(HighlightChosenColor, HighlightChosenColor);
-                NoteUI.Render(0);*/
+                //LoadNotes NoteUI = new LoadNotes(HighlightChosenColor, HighlightChosenColor);
+                //NoteUI.Render(0);
                 string[] options = { "Close" };
                 int[] specialsymbols = { 0, 1 };
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, null, null, null, null, TextChosenColor, HighlightChosenColor, specialsymbols, null, null);

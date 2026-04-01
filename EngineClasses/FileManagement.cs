@@ -18,7 +18,7 @@ namespace LITOURGIYA___OBLATION
             string folder = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
             if (!Directory.Exists(folder))
             {
-                Directory.CreateDirectory(folder);
+                Directory.CreateDirectory("Savefiles");
             }
             string FileName = "[" + data.FileCreationHour + "∶" + data.FileCreationMinutes + ", " + data.FileCreationDate + "] “" + data.FileCreationName + "” - " + "Day " + data.InGameDay + ".json";
             folder = Path.Combine(folder, FileName);
@@ -237,7 +237,6 @@ namespace LITOURGIYA___OBLATION
         {
             string dir = Path.Combine("Assets", name + ".txt");
             string[] data = File.ReadAllLines(dir);
-            Directory.SetCurrentDirectory("Savefiles");
             return data;
         }
     }

@@ -1,4 +1,6 @@
 ﻿using LITOURGIYA___OBLATION.EngineClasses;
+using LITOURGIYA___OBLATION.GameplayClasses;
+using LITOURGIYA___OBLATION.InGameUIClasses;
 using NAudio.Codecs;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,7 @@ namespace LITOURGIYA___OBLATION
         FileManagement FileManager = new FileManagement();
         Random Rand = new Random();
         AssetStation AssetStation = new AssetStation();
+        BodyStatus BodyStatus = new BodyStatus();
         public void Hideout() 
         {
             LoadNotes NoteLoader = new LoadNotes(HighlightChosenColor, TextChosenColor);
@@ -75,7 +78,7 @@ namespace LITOURGIYA___OBLATION
                     optioncolors[optioncolors.Length - 1] = 5;
                     specialsymbol[specialsymbol.Length - 1] = 8;
                 }
-                string Sensations = GrabSensations(Data);
+                string Sensations = BodyStatus.GrabSensations(Data);
                 string[] prompts =
                 {
                     "ORCHIDEJ POWER PLANT", " - ", "Hideout\n", "Day 1, 9:00 AM\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", "  " + Sensations + "\n", "\n"
@@ -259,15 +262,41 @@ namespace LITOURGIYA___OBLATION
                     case 17:
                         if (Data.FirstAimPractise == true)
                         {
-                            prompts = new string[] { "There aren't any apparent changes outside the mettalic door, only my shiver on the cold breeze and two corridors on each side. I remember that the right one leads outside. \n", "\n" };
-                            textcolors = new int[] { 7, 7 };
-                            options = new string[] { "Enter your Hideout", "Go towards the left corridor", "Go towards the right corridor" };
-                            specialsymbol = new int[] { 0, 1, 0, 1, 0, 1 };
-                            ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
-                            ConsoleOutput.OptionIndexPlacement = 0;
-                            ConsoleOutput.RenderText(prompts, textcolors);
-                            ConsoleOutput.RenderOptions(options, specialsymbol);
-                            SelectedIndex = ConsoleOutput.Run();
+                            bool esc2 = false;
+                            while (esc2 == false)
+                            {
+                                prompts = new string[] { "There aren't any apparent changes outside the mettalic door, only my shiver on the cold breeze and two corridors on each side. I remember that the right one leads outside. \n", "\n" };
+                                textcolors = new int[] { 7, 7 };
+                                options = new string[] { "Enter your Hideout", "Go towards the left corridor", "Go towards the right corridor" };
+                                specialsymbol = new int[] { 5, 6, 5, 8, 5, 6 };
+                                optioncolors = new int[] { 6, 5, 6 };
+                                ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
+                                ConsoleOutput.OptionIndexPlacement = 0;
+                                ConsoleOutput.RenderText(prompts, textcolors);
+                                ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
+                                SelectedIndex = ConsoleOutput.Run();
+                                switch (SelectedIndex)
+                                {
+                                    case 0:
+                                        esc2 = true;
+                                        break;
+                                    case 1:
+                                        OrchidejLeftSection LeftSection = new OrchidejLeftSection(TextChosenColor, HighlightChosenColor, Data);
+                                        LeftSection.LeftCorridor();
+                                        break;
+                                    case 2:
+                                        prompts = new string[] { "I shouldn't go out right now, my rifle's iron sight is still too loose.", "\n" };
+                                        textcolors = new int[] { 7, 7 };
+                                        options = new string[] { "back" };
+                                        specialsymbol = new int[] { 0, 1 };
+                                        ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
+                                        ConsoleOutput.OptionIndexPlacement = 0;
+                                        ConsoleOutput.RenderText(prompts, textcolors);
+                                        ConsoleOutput.RenderOptions(options, specialsymbol);
+                                        ConsoleOutput.Run();
+                                        break;
+                                }
+                            }
                             break;
                         }
                         else
@@ -290,16 +319,6 @@ namespace LITOURGIYA___OBLATION
         {
             DataStructure data = FileManager.LoadData(SaveFile);
             return data;
-        }
-        private string GrabSensations(DataStructure data)
-        {
-            string sensations = AssetStation.SanityParameters[data.MoodStatus] + " | " + AssetStation.EnergyParameters[data.EnergyStatus];
-            if (data.PainStatus > 0) sensations += " | " + AssetStation.PainParameters[data.PainStatus];
-            if (data.ThirstStatus > 0) sensations += " | " + AssetStation.ThirstParameters[data.ThirstStatus];
-            if (data.HungerStatus > 0) sensations += " | " + AssetStation.HungerParameters[data.HungerStatus];
-            if (data.ColdStatus > 0) sensations += " | " + AssetStation.ColdParameters[data.ColdStatus];
-            if (data.HeatStatus > 0) sensations += " | " + AssetStation.HeatParameters[data.HeatStatus];
-            return sensations;
         }
     }
 }
