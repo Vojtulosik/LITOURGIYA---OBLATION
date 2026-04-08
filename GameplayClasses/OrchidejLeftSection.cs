@@ -35,11 +35,11 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                     "   The concrete corridor stretches into the dark, loose wiring hanging overhead and a greasy wooden door faintly\n   visible on the far left.\n",
                     "   If only I had a flashlight.\n"
                 };
-                string[] options =
+                string[] options = { "Side greasy door - ???", "Into the dark", "Back" };
+                if (Data.TinyStockroomExplored != false)
                 {
-                    //"<<  ", "  >>", "(  ", "  )", "  ", "[", "]", ""
-                    "Side greasy door - ???", "Into the dark", "Back"
-                };
+                    options[0] = "Side greasy door - Tiny stockroom";
+                }
                 int[] optioncolors =
                 {
                 6, 6, 6
@@ -86,19 +86,41 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                 "   There's a metal box hanging on the wall too, with a sticker that's too scraped to tell what it means.\n",
                 "   It seriously stinks in here."
                 };
-                string[] options =
+                string[] options;
+                int[] optioncolors;
+                int[] specialsymbol;
+                if (Data.TinyStockroomExplored == true)
                 {
-                //"<<  ", "  >>", "(  ", "  )", "  ", "[", "]", ""
-                "Rack - Left wall", "Rack - In between", "Rack - Right wall", "Wall - hanging metal box", "Floor - Scattered trash", "back"
-                };
-                int[] optioncolors =
+                    options = new string[]
+                    {
+                        //"<<  ", "  >>", "(  ", "  )", "  ", "[", "]", ""
+                        "Rack - Left wall", "Rack - In between", "Rack - Right wall", "Wall - hanging metal box", "Floor - Scattered trash", "back"
+                    };
+                    optioncolors = new int[]
+                    {
+                        6, 6, 6, 6, 6, 6
+                    };
+                    specialsymbol = new int[]
+                    {
+                        5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6
+                    };
+                }
+                else
                 {
-                6, 6, 6, 6, 6, 6
-                };
-                int[] specialsymbol =
-                {
-                5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6
-                };
+                    options = new string[]
+                    {
+                        //"<<  ", "  >>", "(  ", "  )", "  ", "[", "]", ""
+                        "Rack - Left wall", "Rack - In between", "Rack - Right wall", "Wall - hanging metal box", "Floor - Scattered trash", "Spraypaint - Navigation symbol", "back"
+                    };
+                    optioncolors = new int[]
+                    {
+                        6, 6, 6, 6, 6, 6, 6
+                    };
+                    specialsymbol = new int[]
+                    {
+                        5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 0, 1, 5, 6
+                    };
+                }
                 string[] prompts =
                 {
                 "ORCHIDEJ POWER PLANT", " - ", "Left section" + "\n", "Day " + Data.InGameDay + ", " + Data.Time + "\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], thoughts[2], "\n", "Sensations :\n", "  " + Sensations + "\n", "\n", "Location : ", location + "\n", "\n"
@@ -114,6 +136,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                 switch (SelectedIndex)
                 {
                     case 0:
+
                         break;
                     case 1:
                         break;
@@ -124,6 +147,25 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                     case 4:
                         break;
                     case 5:
+                        if (Data.TinyStockroomExplored == true)
+                        {
+                            esc = true;
+                        }
+                        else
+                        {
+                            prompts = new string[] { "I grab a spraypaint can from my toolbelt, spraying a little doodle on the enterance's door. No way I'll forget about this room now.\n", "\n" };
+                            textcolors = new int[] { 7, 7 };
+                            options = new string[] { "Confirm" };
+                            specialsymbol = new int[] { 0, 1 };
+                            optioncolors = new int[] { 6 };
+                            ConsoleOutput.OptionIndexPlacement = 0;
+                            ConsoleOutput.RenderText(prompts, textcolors);
+                            ConsoleOutput.RenderOptions(options, specialsymbol);
+                            ConsoleOutput.Run();
+                            Data.TinyStockroomExplored = true;
+                        }
+                        break;
+                    case 6:
                         esc = true;
                         break;
                 }

@@ -25,5 +25,7 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public int HeatStatus { get; set; }
         public int ColdStatus { get; set; }
         public int EnergyStatus { get; set; }
+        //Fifth branch == Orchidej left section data
+        public bool TinyStockroomExplored { get; set; } = false;
     }
 }
