@@ -22,7 +22,10 @@ namespace LITOURGIYA___OBLATION
             }
             string FileName = "[" + data.FileCreationHour + "∶" + data.FileCreationMinutes + ", " + data.FileCreationDate + "] “" + data.FileCreationName + "” - " + "Day " + data.InGameDay + ".json";
             folder = Path.Combine(folder, FileName);
-            string json = JsonSerializer.Serialize(data);
+            string json = JsonSerializer.Serialize(data, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
             File.WriteAllText(folder, json);
             if (!string.IsNullOrEmpty(path) && File.Exists(path) && path != folder)
             {

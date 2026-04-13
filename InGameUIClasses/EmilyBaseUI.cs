@@ -315,7 +315,7 @@ namespace LITOURGIYA___OBLATION
                 }
             }
         }
-        private DataStructure UpdateData()
+        private DataStructure UpdateData() 
         {
             DataStructure data = FileManager.LoadData(SaveFile);
             return data;

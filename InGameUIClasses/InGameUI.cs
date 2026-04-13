@@ -38,8 +38,7 @@ namespace LITOURGIYA___OBLATION
                 ConsoleOutput.RenderOptions(options, specialsymbols);
                 ConsoleOutput.Run();
                 Console.Clear();
-                Data.InGameDay = 1;
-                Data.Time = "9:00AM";
+                LoadEnvironmentalData();
                 FileManager.SaveProgress(SoulFilePlacement, Data);
             }
             SoulFilePlacement = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
@@ -128,6 +127,27 @@ namespace LITOURGIYA___OBLATION
             ConsoleOutput.RenderText(prompts, textcolors, 30);
             Thread.Sleep(6000);
             Console.Clear();
+        }
+        private void LoadEnvironmentalData()
+        {
+            Data.InGameDay = 1;
+            Data.Time = "9:00AM";
+            bool test;
+
+
+            if (!Data.Inventory.TryAdd("Scrap polymers", 0)) test = true;  //This later will be for logging errors
+            if (!Data.Inventory.TryAdd("Wood scrap", 0)) test = true;
+            if (!Data.Inventory.TryAdd("Bottle of acid", 0)) test = true;
+            if (!Data.Inventory.TryAdd("Glue", 0)) test = true;
+
+
+            int[] format = { 5/*Scrap Polymers*/, 4/*Wood Scrap*/, 2/*Chemical Products*/, 1/*Glue bottle*/ };
+            string[] namesOfFormat = { "Scrap polymers", "Wood scrap", "Bottle of acid", "Glue" };
+            if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomLeftRackLoot", format)) test = true;
+            if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomLeftRackLoot", namesOfFormat)) test = true;
+
+
+            if (!Data.EnvironmentalStatusData.TryAdd("TinyStockroomExplored", false)) test = true;
         }
     }
 }
