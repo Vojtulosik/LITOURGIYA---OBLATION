@@ -63,7 +63,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 }
             }
         }
-        public DataStructure LootInteract(DataStructure Data, int SelectedIndex, List<int> LootOptionsValues, List<string> LootOptions, string[] LootDataNames, int[] LootData, List<int> LootOptionsStoreValues)
+        public DataStructure LootInteract(DataStructure Data, int SelectedIndex, List<int> LootOptionsValues, List<string> LootOptions, string[] LootDataNames, int[] LootData, List<int> LootOptionsStoreValues, string DictionaryKey)
         {
             if (LootOptionsValues[SelectedIndex] > 0)
             {
@@ -79,6 +79,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 LootOptionsStoreValues[LootTypeIndex] = LootData[LootTypeIndex];
                 Data.Inventory[LootOptions[SelectedIndex]] = Data.Inventory[LootOptions[SelectedIndex]] - LootData[LootTypeIndex];
             }
+            Data.EnvironmentalLootData[DictionaryKey] = LootOptionsStoreValues.ToArray();
             return Data;
         }
     }

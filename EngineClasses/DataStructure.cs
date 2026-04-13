@@ -28,5 +28,6 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public int HeatStatus { get; set; }
         public int ColdStatus { get; set; }
         public int EnergyStatus { get; set; }
+        public Dictionary<string, int> Inventory { get; set; } = new();
     }
 }
