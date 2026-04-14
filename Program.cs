@@ -7,6 +7,8 @@ namespace LITOURGIYA___OBLATION
         {
             Console.ResetColor();
             MainMenu MainMenu = new MainMenu();
+            FileManagement FileManager = new FileManagement();
+            FileManager.CreateConfigFile();
             MainMenu.StartupMenu();
         }
 

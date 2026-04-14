@@ -12,7 +12,7 @@ namespace LITOURGIYA___OBLATION
     internal class FileManagement
     {
         public int AmountOfSouls;
-
+        public const int CurrentGameVersion = 1;
         public void SaveProgress(string path, DataStructure data)
         {
             string folder = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
@@ -240,6 +240,76 @@ namespace LITOURGIYA___OBLATION
         {
             string dir = Path.Combine("Assets", name + ".txt");
             string[] data = File.ReadAllLines(dir);
+            return data;
+        }
+        public void CreateConfigFile()
+        {
+            ConfigFileData ConfigData = new ConfigFileData();
+            ConfigData.TextHighlightColor = 6;
+            ConfigData.TextColor = 9;
+            string json = JsonSerializer.Serialize(ConfigData, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Config.json");
+            if (!File.Exists(path)) File.WriteAllText(path, json);
+        }
+        public void UpdateConfigFile(ConfigFileData ConfigData)
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Config.json");
+            string json = JsonSerializer.Serialize(ConfigData, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+            File.WriteAllText(path, json);
+        }
+        public ConfigFileData LoadConfigFile()
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "Config.json");
+            string json = File.ReadAllText(path);
+            return JsonSerializer.Deserialize<ConfigFileData>(json);
+        }
+        public DataStructure CheckSafeFileVersion(DataStructure data, string path)
+        {
+            if (data.Version != CurrentGameVersion) data = RepairSaveFile(data);
+            return data;
+        }
+        private DataStructure RepairSaveFile(DataStructure data)
+        {
+            if (data.Inventory == null)
+                data.Inventory = new List<string>();
+
+            if (data.InventoryValues == null)
+                data.InventoryValues = new List<int>();
+
+            if (data.EnvironmentalLootData == null)
+                data.EnvironmentalLootData = new Dictionary<string, int[]>();
+
+            if (data.EnvironmentalLootDataNames == null)
+                data.EnvironmentalLootDataNames = new Dictionary<string, string[]>();
+
+            if (data.EnvironmentalStatusData == null)
+                data.EnvironmentalStatusData = new Dictionary<string, bool>();
+
+            if (!data.EnvironmentalLootData.ContainsKey("TinyStockroomLeftRackLoot"))
+            {
+                data.EnvironmentalLootData["TinyStockroomLeftRackLoot"] = new int[] { 5, 4, 2, 1 };
+            }
+
+            if (!data.EnvironmentalLootDataNames.ContainsKey("TinyStockroomLeftRackLoot"))
+            {
+                data.EnvironmentalLootDataNames["TinyStockroomLeftRackLoot"] = new string[] { "Scrap polymers", "Wood scrap", "Bottle of acid", "Glue" };
+            }
+
+            if (!data.EnvironmentalStatusData.ContainsKey("TinyStockroomExplored"))
+            {
+                data.EnvironmentalStatusData.TryAdd("TinyStockroomExplored", false);
+            }
+
+
+
+
+            data.Version = CurrentGameVersion;
             return data;
         }
     }

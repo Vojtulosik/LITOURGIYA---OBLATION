@@ -6,6 +6,7 @@ namespace LITOURGIYA___OBLATION.EngineClasses
 {
     internal class DataStructure
     {
+        public int Version { get; set; }
         //First branch == Progression status data
         public int InGameDay { get; set; }
         public bool FirstAimPractise { get; set; }
@@ -28,6 +29,10 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public int HeatStatus { get; set; }
         public int ColdStatus { get; set; }
         public int EnergyStatus { get; set; }
-        public Dictionary<string, int> Inventory { get; set; } = new();
+        public List<string> Inventory { get; set; } = new();
+        public List<int> InventoryValues { get; set; } = new();
+        public List<int> ToolsDurability { get; set; } = new();
+        public List<string> Tools { get; set; } = new();
+        public List<int> CarryingTools { get; set; } = new();
     }
 }

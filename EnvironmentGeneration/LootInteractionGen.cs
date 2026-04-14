@@ -12,7 +12,15 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
         public string[] Generate(int[] values, string[] names, DataStructure Data, out int[] specialsymbol, out int[] optioncolors)
         {
             string[] options = new string[names.Length + 1];
-            for (int i = 0; i < names.Length; i++) options[i] = names[i] + " [" + values[i] + "x] >> Inventory : [" + Data.Inventory[names[i]] + "x]";
+            for (int i = 0; i < names.Length; i++)
+            {
+                int ListValue = Data.Inventory.IndexOf(names[i]);
+                if (ListValue == -1) ListValue = 0;
+                else ListValue = Data.InventoryValues[ListValue];
+
+
+                options[i] = names[i] + " [" + values[i] + "x] >> Inventory : [" + ListValue + "x]";
+            }
             options[names.Length] = "Back";
 
 
@@ -68,7 +76,19 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
             if (LootOptionsValues[SelectedIndex] > 0)
             {
                 int LootTypeIndex = LootDataNames.IndexOf(LootOptions[SelectedIndex]);
-                Data.Inventory[LootOptions[SelectedIndex]] = Data.Inventory[LootOptions[SelectedIndex]] + LootOptionsValues[SelectedIndex];
+                if (!Data.Inventory.Contains(LootOptions[SelectedIndex]))
+                {
+                    Data.Inventory.Add(LootOptions[SelectedIndex]);
+                    Data.InventoryValues.Add(LootOptionsValues[SelectedIndex]);
+                }
+                else
+                {
+                    int invIndex = Data.Inventory.IndexOf(LootOptions[SelectedIndex]);
+                    if (invIndex != -1)
+                    {
+                        Data.InventoryValues[invIndex] += LootOptionsValues[SelectedIndex];
+                    }
+                }
                 LootOptionsStoreValues[LootTypeIndex] = 0;
                 LootOptionsValues[SelectedIndex] = 0;
             }
@@ -77,7 +97,16 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 int LootTypeIndex = LootDataNames.IndexOf(LootOptions[SelectedIndex]);
                 LootOptionsValues[SelectedIndex] = LootData[LootTypeIndex];
                 LootOptionsStoreValues[LootTypeIndex] = LootData[LootTypeIndex];
-                Data.Inventory[LootOptions[SelectedIndex]] = Data.Inventory[LootOptions[SelectedIndex]] - LootData[LootTypeIndex];
+                int ListIndex = Data.Inventory.IndexOf(LootOptions[SelectedIndex]);
+                if (Data.InventoryValues[ListIndex] - LootData[LootTypeIndex] <= 0)
+                {
+                    Data.Inventory.RemoveAt(ListIndex);
+                    Data.InventoryValues.RemoveAt(ListIndex);
+                }
+                else
+                {
+                    Data.InventoryValues[ListIndex] -= LootData[LootTypeIndex];
+                }
             }
             Data.EnvironmentalLootData[DictionaryKey] = LootOptionsStoreValues.ToArray();
             return Data;

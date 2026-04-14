@@ -160,7 +160,6 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                             {
                                 esc2 = true;
                             }
-
                         }
                         break;
                     case 1:

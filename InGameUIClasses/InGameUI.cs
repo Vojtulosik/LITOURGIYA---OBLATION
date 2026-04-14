@@ -135,12 +135,6 @@ namespace LITOURGIYA___OBLATION
             bool test;
 
 
-            if (!Data.Inventory.TryAdd("Scrap polymers", 0)) test = true;  //This later will be for logging errors
-            if (!Data.Inventory.TryAdd("Wood scrap", 0)) test = true;
-            if (!Data.Inventory.TryAdd("Bottle of acid", 0)) test = true;
-            if (!Data.Inventory.TryAdd("Glue", 0)) test = true;
-
-
             int[] format = { 5/*Scrap Polymers*/, 4/*Wood Scrap*/, 2/*Chemical Products*/, 1/*Glue bottle*/ };
             string[] namesOfFormat = { "Scrap polymers", "Wood scrap", "Bottle of acid", "Glue" };
             if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomLeftRackLoot", format)) test = true;

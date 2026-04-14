@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LITOURGIYA___OBLATION.EngineClasses;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
@@ -8,13 +9,18 @@ namespace LITOURGIYA___OBLATION
     internal class MainMenu
     {
         FileManagement FileManager = new FileManagement();
+
         public int HighlightChosenColor = 6;
         public int TextChosenColor = 9;
         private bool withdelay = true;
+        ConfigFileData ConfigData;
         public void StartupMenu()
         {
+            ConfigData = FileManager.LoadConfigFile();
             while (true)
             {
+                HighlightChosenColor = ConfigData.TextHighlightColor;
+                TextChosenColor = ConfigData.TextColor;
                 Console.CursorVisible = false;
                 string[] options =
                 {
@@ -260,6 +266,7 @@ namespace LITOURGIYA___OBLATION
                             HighlightChosenColor = 0;
                         }
                         ConsoleOutput.TextHighlightColor = ConsoleOutput.availabletextcolors[HighlightChosenColor];
+                        ConfigData.TextHighlightColor = HighlightChosenColor;
                         Console.Clear();
                         ConsoleOutput.RenderText(prompts, textcolors);
                         ConsoleOutput.RenderOptions(options, specialsymbol);
@@ -274,12 +281,14 @@ namespace LITOURGIYA___OBLATION
                             TextChosenColor = 0;
                         }
                         ConsoleOutput.TextColor = ConsoleOutput.availabletextcolors[TextChosenColor];
+                        ConfigData.TextColor = TextChosenColor;
                         Console.Clear();
                         ConsoleOutput.RenderText(prompts, textcolors);
                         ConsoleOutput.RenderOptions(options, specialsymbol);
                         break;
                     case 3:
                         withdelay = false;
+                        FileManager.UpdateConfigFile(ConfigData);
                         break;
                 }
             }
