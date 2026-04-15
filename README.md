@@ -1,5 +1,5 @@
 CC BY-NC 4.0, You can build upon this project, but musn't use it for any commerical means.
 This is a personal project I've been building to learn more about the C# Programming language, so please be aware that my code might not be ideal. Any code change suggestions are welcome, I'd love to hear any improvements!
 
-LITOURGIYA - Oblation :
-NATURE IS DEAD, STEEL IS BRED, 
+LITOURGIYA - Oblation : NATURE IS DEAD, STEEL IS BRED, FLESH IS MISREAD.	
+An Existencial horror post-apo text-based rpg based on the LITOURGIYA, "TOUR" lore universe created by Funi, aka Vojtulosik. The world has forgotten how to breathe, all nature replaced by the Architech's entropic industrial grayhell. Your main goal is to survive as one of the last rare occurences of a functioning human body, learning how to navigate endless perpetual brutalistic environments, use them for your advantage and learn how to properly maintain your nature's gift. Your goal is to prove that Nature is not gone, by finding a way to grow a plant. It doesn't matter which, but anything that blooms the same way your flesh did before you were born. Restraint and patience is key, you never know who's watching.
