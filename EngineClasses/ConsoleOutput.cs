@@ -51,6 +51,8 @@ namespace LITOURGIYA___OBLATION
         public ConsoleColor TextColor = ConsoleColor.Black;
         private string UserInput = "";
         public int OptionIndexPlacement = 0;
+        public char IndexSymbol = '*';
+
 
         public ConsoleOutput(string[] options, string[] prompts, int[] textcolors, int[] delay, bool[] sound, int textcolor, int highlightcolor, int[] specialsymbol, int[] optiontextcolor, string[] optiontext)
         {
@@ -68,7 +70,6 @@ namespace LITOURGIYA___OBLATION
         }
         FileManagement FileManager = new FileManagement();
         SoundHub soundhub = new SoundHub();
-        char IndexSymbol;
         public void UpdateValues(string[] prompts, int[] colors)
         {
             Prompts = prompts;
@@ -134,7 +135,7 @@ namespace LITOURGIYA___OBLATION
                 {
                     Console.BackgroundColor = TextHighlightColor;
                     Console.ForegroundColor = TextColor;
-                    IndexSymbol = '*';
+                    IndexSymbol = FileManager.LoadIndexChar();
                 }
                 else
                 {
@@ -171,7 +172,7 @@ namespace LITOURGIYA___OBLATION
                 {
                     Console.BackgroundColor = TextHighlightColor;
                     Console.ForegroundColor = TextColor;
-                    IndexSymbol = '*';
+                    IndexSymbol = FileManager.LoadIndexChar();
                 }
                 else
                 {
@@ -199,7 +200,7 @@ namespace LITOURGIYA___OBLATION
                 {
                     Console.BackgroundColor = TextHighlightColor;
                     Console.ForegroundColor = TextColor;
-                    IndexSymbol = '*';
+                    IndexSymbol = FileManager.LoadIndexChar();
                 }
                 else
                 {

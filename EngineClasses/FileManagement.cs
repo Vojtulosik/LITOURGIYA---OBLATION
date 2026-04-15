@@ -305,12 +305,13 @@ namespace LITOURGIYA___OBLATION
             {
                 data.EnvironmentalStatusData.TryAdd("TinyStockroomExplored", false);
             }
-
-
-
-
             data.Version = CurrentGameVersion;
             return data;
+        }
+        public char LoadIndexChar()
+        {
+            ConfigFileData ConfigData = LoadConfigFile();
+            return ConfigData.SelectionSymbol;
         }
     }
 }
