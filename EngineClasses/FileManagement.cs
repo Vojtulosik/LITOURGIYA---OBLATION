@@ -111,23 +111,61 @@ namespace LITOURGIYA___OBLATION
                         minute = "" + now.Minute;
                     }
                     string Filename = "[" + Time + ", " + now.Day + "." + now.Month + "." + now.Year + "]" + " “" + UserInput + "” - Day 0";
-                    DataStructure DataStructure = new DataStructure()
+                    string[] Files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "Savefiles"));
+                    bool FileExists = false;
+                    for (int i = 0; i < Files.Length; i++)
                     {
-                        InGameDay = 0,
-                        Time = "9:00AM",
-                        FirstAimPractise = false,
-                        BulletsInMag = 5,
-                        FileCreationHour = hour,
-                        FileCreationMinutes = minute,
-                        FileCreationDate = now.Day + "." + now.Month + "." + now.Year,
-                        FileCreationName = UserInput
-                    };
-                    string json = JsonSerializer.Serialize(DataStructure, new JsonSerializerOptions
+                        string filePath = Path.GetFullPath(Files[i]);
+                        DataStructure Data = LoadData(filePath);
+                        if (Data.FileCreationName == UserInput) FileExists = true;
+                    }
+                    int AmountOfFiles = Files.Length;
+                    if (FileExists == false)
                     {
-                        WriteIndented = true
-                    });
-                    string filedir = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
-                    File.WriteAllText(Path.Combine(filedir, Filename) + ".json", json);
+                        ConfigFileData ConfigData = LoadConfigFile();
+                        if (AmountOfFiles >= ConfigData.MaxSaveFileCount)
+                        {
+                            prompts = new string[] { "Cannot create Soul : ", "Too many ", "souls ", "exist.", " Kill ", "one and then create a new one.\n\n" };
+                            textcolors = new int[] { 0, 7, 5, 7, 1, 7 };
+                            options = new string[] { "Close" };
+                            specialsymbol = new int[] { 0, 1 };
+                            ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
+                            ConsoleOutput.RenderText(prompts, textcolors);
+                            ConsoleOutput.RenderOptions(options, specialsymbol);
+                            ConsoleOutput.Run();
+                        }
+                        else
+                        {
+                            DataStructure DataStructure = new DataStructure()
+                            {
+                                InGameDay = 0,
+                                Time = "9:00AM",
+                                FirstAimPractise = false,
+                                BulletsInMag = 5,
+                                FileCreationHour = hour,
+                                FileCreationMinutes = minute,
+                                FileCreationDate = now.Day + "." + now.Month + "." + now.Year,
+                                FileCreationName = UserInput
+                            };
+                            string json = JsonSerializer.Serialize(DataStructure, new JsonSerializerOptions
+                            {
+                                WriteIndented = true
+                            });
+                            string filedir = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
+                            File.WriteAllText(Path.Combine(filedir, Filename) + ".json", json);
+                        }
+                    }
+                    else
+                    {
+                        prompts = new string[] { "Cannot create Soul : ", "Soul with the same name \"", UserInput, "\" already exists.\n\n" };
+                        textcolors = new int[] { 0, 7, 1, 7 };
+                        options = new string[] { "Close" };
+                        specialsymbol = new int[] { 0, 1 };
+                        ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
+                        ConsoleOutput.RenderText(prompts, textcolors);
+                        ConsoleOutput.RenderOptions(options, specialsymbol);
+                        ConsoleOutput.Run();
+                    }
                     break;
             }
         }
@@ -247,6 +285,8 @@ namespace LITOURGIYA___OBLATION
             ConfigFileData ConfigData = new ConfigFileData();
             ConfigData.TextHighlightColor = 6;
             ConfigData.TextColor = 9;
+            ConfigData.MaxSaveFileCount = 10;
+            ConfigData.SelectionSymbol = '*';
             string json = JsonSerializer.Serialize(ConfigData, new JsonSerializerOptions
             {
                 WriteIndented = true

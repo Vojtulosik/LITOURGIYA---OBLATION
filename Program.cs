@@ -5,6 +5,7 @@ namespace LITOURGIYA___OBLATION
     {
         public static void Main(string[] args)
         {
+            Console.Title = "LITOURGIYA - Oblation";
             Console.ResetColor();
             MainMenu MainMenu = new MainMenu();
             FileManagement FileManager = new FileManagement();
