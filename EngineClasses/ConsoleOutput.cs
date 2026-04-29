@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LITOURGIYA___OBLATION.GameplayClasses;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.Tracing;
@@ -52,6 +53,7 @@ namespace LITOURGIYA___OBLATION
         private string UserInput = "";
         public int OptionIndexPlacement = 0;
         public char IndexSymbol = '*';
+        BodyStatus BodyStatus = new BodyStatus();
 
 
         public ConsoleOutput(string[] options, string[] prompts, int[] textcolors, int[] delay, bool[] sound, int textcolor, int highlightcolor, int[] specialsymbol, int[] optiontextcolor, string[] optiontext)
@@ -413,6 +415,209 @@ namespace LITOURGIYA___OBLATION
                     }
                 }
             } while (KeyPressed != ConsoleKey.Enter);
+            return OptionIndexPlacement;
+        }
+        public int Run(bool ObjectExists)
+        {
+            ConsoleKey KeyPressed;
+            do
+            {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                KeyPressed = keyInfo.Key;
+                if (KeyPressed == ConsoleKey.B)
+                {
+                    if (!ObjectExists)
+                    {
+                        BodyStatus.BodyCheckUI(this);
+                        return 9999;
+                    }
+                }
+                if (Options.Length > 1)
+                {
+                    if (KeyPressed == ConsoleKey.UpArrow)
+                    {
+                        if (Options.Length > 1)
+                        {
+                            OptionIndexPlacement--;
+                            if (OptionIndexPlacement == -1)
+                            {
+                                OptionIndexPlacement = Options.Length - 1;
+                            }
+                        }
+                        if (SpecialSymbol[OptionIndexPlacement * 2] == 7)
+                        {
+                            OptionIndexPlacement--;
+                            if (OptionIndexPlacement == -1)
+                            {
+                                OptionIndexPlacement = Options.Length - 1;
+                            }
+                        }
+                        if (Options[OptionIndexPlacement] == "")
+                        {
+                            OptionIndexPlacement--;
+                        }
+                        if (OptionIndexPlacement == -1)
+                        {
+                            OptionIndexPlacement = Options.Length - 1;
+                        }
+                    }
+                    else if (KeyPressed == ConsoleKey.DownArrow)
+                    {
+                        if (Options.Length > 1)
+                        {
+                            OptionIndexPlacement++;
+                            if (OptionIndexPlacement == Options.Length)
+                            {
+                                if (SpecialSymbol[0] == 7)
+                                {
+                                    OptionIndexPlacement = 1;
+                                }
+                                else
+                                {
+                                    OptionIndexPlacement = 0;
+                                }
+                            }
+                        }
+                        if (Options[OptionIndexPlacement] == "")
+                        {
+                            OptionIndexPlacement++;
+                        }
+                        if (SpecialSymbol[OptionIndexPlacement * 2] == 7)
+                        {
+                            OptionIndexPlacement++;
+                        }
+                        if (OptionIndexPlacement == Options.Length)
+                        {
+                            if (SpecialSymbol[0] == 7)
+                            {
+                                OptionIndexPlacement = 1;
+                            }
+                            else
+                            {
+                                OptionIndexPlacement = 0;
+                            }
+                        }
+                    }
+
+                    if (KeyPressed == ConsoleKey.UpArrow || KeyPressed == ConsoleKey.DownArrow)
+                    {
+                        Console.Clear();
+                        if (Prompts != null)
+                        {
+                            RenderText(Prompts, Textcolors);
+                        }
+                        if (OptionSpecialColor != null)
+                        {
+                            RenderOptions(Options, SpecialSymbol, OptionSpecialColor);
+                        }
+                        else
+                        {
+                            RenderOptions(Options, SpecialSymbol);
+                        }
+                    }
+                }
+            } while (KeyPressed != ConsoleKey.Enter);
+            return OptionIndexPlacement;
+        }
+        public int Run(bool ObjectExists, out ConsoleKey KeyPressed)
+        {
+            do
+            {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                KeyPressed = keyInfo.Key;
+                if (KeyPressed == ConsoleKey.B)
+                {
+                    if (!ObjectExists)
+                    {
+                        BodyStatus.BodyCheckUI(this);
+                        return 9999;
+                    }
+                }
+                if (Options.Length > 1)
+                {
+                    if (KeyPressed == ConsoleKey.UpArrow)
+                    {
+                        if (Options.Length > 1)
+                        {
+                            OptionIndexPlacement--;
+                            if (OptionIndexPlacement == -1)
+                            {
+                                OptionIndexPlacement = Options.Length - 1;
+                            }
+                        }
+                        if (SpecialSymbol[OptionIndexPlacement * 2] == 7)
+                        {
+                            OptionIndexPlacement--;
+                            if (OptionIndexPlacement == -1)
+                            {
+                                OptionIndexPlacement = Options.Length - 1;
+                            }
+                        }
+                        if (Options[OptionIndexPlacement] == "")
+                        {
+                            OptionIndexPlacement--;
+                        }
+                        if (OptionIndexPlacement == -1)
+                        {
+                            OptionIndexPlacement = Options.Length - 1;
+                        }
+                    }
+                    else if (KeyPressed == ConsoleKey.DownArrow)
+                    {
+                        if (Options.Length > 1)
+                        {
+                            OptionIndexPlacement++;
+                            if (OptionIndexPlacement == Options.Length)
+                            {
+                                if (SpecialSymbol[0] == 7)
+                                {
+                                    OptionIndexPlacement = 1;
+                                }
+                                else
+                                {
+                                    OptionIndexPlacement = 0;
+                                }
+                            }
+                        }
+                        if (Options[OptionIndexPlacement] == "")
+                        {
+                            OptionIndexPlacement++;
+                        }
+                        if (SpecialSymbol[OptionIndexPlacement * 2] == 7)
+                        {
+                            OptionIndexPlacement++;
+                        }
+                        if (OptionIndexPlacement == Options.Length)
+                        {
+                            if (SpecialSymbol[0] == 7)
+                            {
+                                OptionIndexPlacement = 1;
+                            }
+                            else
+                            {
+                                OptionIndexPlacement = 0;
+                            }
+                        }
+                    }
+
+                    if (KeyPressed == ConsoleKey.UpArrow || KeyPressed == ConsoleKey.DownArrow)
+                    {
+                        Console.Clear();
+                        if (Prompts != null)
+                        {
+                            RenderText(Prompts, Textcolors);
+                        }
+                        if (OptionSpecialColor != null)
+                        {
+                            RenderOptions(Options, SpecialSymbol, OptionSpecialColor);
+                        }
+                        else
+                        {
+                            RenderOptions(Options, SpecialSymbol);
+                        }
+                    }
+                }
+            } while (KeyPressed != ConsoleKey.Enter && KeyPressed != ConsoleKey.Spacebar && KeyPressed != ConsoleKey.Backspace);
             return OptionIndexPlacement;
         }
     }

@@ -16,6 +16,9 @@
     <None Update="Assets\COMMENT Entry 01 - First aim practise.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Assets\GsewzFrWEAA1BzX.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\JOURNAL Entry 01 - Settlement.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

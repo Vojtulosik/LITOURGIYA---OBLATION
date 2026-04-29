@@ -34,5 +34,7 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public List<int> ToolsDurability { get; set; } = new();
         public List<string> Tools { get; set; } = new();
         public List<int> CarryingTools { get; set; } = new();
+        public decimal InventoryTotalWeight { get; set; } = 0m;
+        public decimal MaxCarryingWeight { get; set; } = 50;
     }
 }

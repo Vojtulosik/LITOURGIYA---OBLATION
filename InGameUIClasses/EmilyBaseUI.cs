@@ -91,7 +91,7 @@ namespace LITOURGIYA___OBLATION
                 ConsoleOutput.OptionIndexPlacement = 1;
                 ConsoleOutput.RenderText(prompts, textcolors);
                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                int SelectedIndex = ConsoleOutput.Run();
+                int SelectedIndex = ConsoleOutput.Run(false);
                 bool esc = false;
                 switch (SelectedIndex)
                 {
@@ -274,7 +274,7 @@ namespace LITOURGIYA___OBLATION
                                 ConsoleOutput.OptionIndexPlacement = 0;
                                 ConsoleOutput.RenderText(prompts, textcolors);
                                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                                SelectedIndex = ConsoleOutput.Run();
+                                SelectedIndex = ConsoleOutput.Run(false);
                                 switch (SelectedIndex)
                                 {
                                     case 0:
@@ -295,6 +295,8 @@ namespace LITOURGIYA___OBLATION
                                         ConsoleOutput.RenderOptions(options, specialsymbol);
                                         ConsoleOutput.Run();
                                         break;
+                                    default:
+                                        break;
                                 }
                             }
                             break;
@@ -312,6 +314,8 @@ namespace LITOURGIYA___OBLATION
                             SelectedIndex = ConsoleOutput.Run();
                             break;
                         }
+                    default:
+                        break;
                 }
             }
         }

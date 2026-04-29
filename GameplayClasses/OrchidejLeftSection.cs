@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LITOURGIYA___OBLATION.InGameUIClasses
@@ -16,7 +17,12 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
         private DataStructure Data;
         private string location = "Enterance corridor";
         private int SelectedIndex = 0;
-        LootInteractionGen LootInter = new LootInteractionGen();
+        private LootInteractionGen LootInter = new LootInteractionGen();
+        private List<string> LootOptions = new List<string>();
+        private List<int> LootOptionsValues = new List<int>();
+        private List<int> LootOptionsStoreValues = new List<int>();
+        private int[] LootData;
+        private string[] LootDataNames;
 
         public OrchidejLeftSection(int textchosencolor, int hightlightchosencolor, DataStructure data)
         {
@@ -61,7 +67,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
                 ConsoleOutput.RenderText(prompts, textcolors);
                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                SelectedIndex = ConsoleOutput.Run();
+                SelectedIndex = ConsoleOutput.Run(false);
                 switch (SelectedIndex)
                 {
                     case 0:
@@ -71,6 +77,8 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                         break;
                     case 2:
                         esc = true;
+                        break;
+                    default:
                         break;
                 }
             }
@@ -134,41 +142,84 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
                 ConsoleOutput.RenderText(prompts, textcolors);
                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                SelectedIndex = ConsoleOutput.Run();
+                SelectedIndex = ConsoleOutput.Run(false);
+                bool esc2 = false;
                 switch (SelectedIndex)
                 {
                     case 0:
-                        bool esc2 = false;
-                        int[] LootData = Data.EnvironmentalLootData["TinyStockroomLeftRackLoot"];
-                        string[] LootDataNames = Data.EnvironmentalLootDataNames["TinyStockroomLeftRackLoot"];
-                        prompts = new string[] { "Tiny Stockroom ", "- ", "Left Rack\n\n", "Thoughts ", ":\n", "  I'm surprised this thing still stands, the wood platform literally bends when I press down on it.\n\n" };
-                        textcolors = new int[] { 4, 7, 6, 1, 7, 7 };
-                        LootInter.FormLists(Data, out List<string> LootOptions, out List<int> LootOptionsValues, out List<int> LootOptionsStoreValues);
+                        ResetLootOptions("TinyStockroomLeftRackLoot");
+                        ConsoleOutput.OptionIndexPlacement = 0;
+                        Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                        prompts = new string[] { "Tiny Stockroom ", "- ", "Left Rack\n\n", "Thoughts ", ":\n", "  I'm surprised this thing still stands, the wood platform literally bends when I press down on it.\n", "  Carrying weight : ", Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n" };
+                        textcolors = new int[] { 4, 7, 6, 1, 7, 7, 7, 5 };
+                        LootInter.FormLists(Data, out LootOptions, out LootOptionsValues, out LootOptionsStoreValues, "TinyStockroomLeftRackLoot");
 
                         while (esc2 == false)
                         {
-                            options = LootInter.Generate(LootOptionsValues.ToArray(), LootOptions.ToArray(), Data, out specialsymbol, out optioncolors);
-                            ConsoleOutput.RenderText(prompts, textcolors);
-                            ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                            ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
-                            SelectedIndex = ConsoleOutput.Run();
-                            if (SelectedIndex != options.Length - 1)
-                            {
-                                Data = LootInter.LootInteract(Data, SelectedIndex, LootOptionsValues, LootOptions, LootDataNames, LootData, LootOptionsStoreValues, "TinyStockroomLeftRackLoot");
-                            }
-                            else
-                            {
-                                esc2 = true;
-                            }
+                            esc2 = CreateLootUI(ConsoleOutput, prompts, textcolors, LootOptions, LootOptionsValues, specialsymbol, optioncolors, LootDataNames, LootData, LootOptionsStoreValues, "TinyStockroomLeftRackLoot");
+                            Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                            prompts[7] = Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n";
                         }
                         break;
                     case 1:
+                        ResetLootOptions("TinyStockroomMiddleRackLoot");
+                        ConsoleOutput.OptionIndexPlacement = 0;
+                        Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                        prompts = new string[] { "Tiny Stockroom ", "- ", "Middle Rack\n\n", "Thoughts ", ":\n", "  So much dust. It's stability isn't any better.\n", "  Carrying weight : ", Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n" };
+                        textcolors = new int[] { 4, 7, 6, 1, 7, 7, 7, 5 };
+                        LootInter.FormLists(Data, out LootOptions, out LootOptionsValues, out LootOptionsStoreValues, "TinyStockroomMiddleRackLoot");
+
+                        while (esc2 == false)
+                        {
+                            esc2 = CreateLootUI(ConsoleOutput, prompts, textcolors, LootOptions, LootOptionsValues, specialsymbol, optioncolors, LootDataNames, LootData, LootOptionsStoreValues, "TinyStockroomMiddleRackLoot");
+                            Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                            prompts[7] = Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n";
+                        }
                         break;
                     case 2:
+                        ResetLootOptions("TinyStockroomRightRackLoot");
+                        ConsoleOutput.OptionIndexPlacement = 0;
+                        Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                        prompts = new string[] { "Tiny Stockroom ", "- ", "Right Rack\n\n", "Thoughts ", ":\n", "  This one's preserved quite well. Obviously though, the weight of the stuff on it would have collapsed it long ago.\n", "  Carrying weight : ", Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n" };
+                        textcolors = new int[] { 4, 7, 6, 1, 7, 7, 7, 5 };
+                        LootInter.FormLists(Data, out LootOptions, out LootOptionsValues, out LootOptionsStoreValues, "TinyStockroomRightRackLoot");
+
+                        while (esc2 == false)
+                        {
+                            esc2 = CreateLootUI(ConsoleOutput, prompts, textcolors, LootOptions, LootOptionsValues, specialsymbol, optioncolors, LootDataNames, LootData, LootOptionsStoreValues, "TinyStockroomRightRackLoot");
+                            Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                            prompts[7] = Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n";
+                        }
                         break;
                     case 3:
+                        ResetLootOptions("TinyStockroomHangingMetalBox");
+                        ConsoleOutput.OptionIndexPlacement = 0;
+                        Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                        prompts = new string[] { "Tiny Stockroom ", "- ", "Hanging metal box\n\n", "Thoughts ", ":\n", "  Oh, it's a first aid kit. I knew the scratched sticker looked like a cross.\n", "  Carrying weight : ", Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n" };
+                        textcolors = new int[] { 4, 7, 6, 1, 7, 7, 7, 5 };
+                        LootInter.FormLists(Data, out LootOptions, out LootOptionsValues, out LootOptionsStoreValues, "TinyStockroomHangingMetalBox");
+
+                        while (esc2 == false)
+                        {
+                            esc2 = CreateLootUI(ConsoleOutput, prompts, textcolors, LootOptions, LootOptionsValues, specialsymbol, optioncolors, LootDataNames, LootData, LootOptionsStoreValues, "TinyStockroomHangingMetalBox");
+                            Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                            prompts[7] = Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n";
+                        }
                         break;
                     case 4:
+                        ResetLootOptions("TinyStockroomFloorScatteredTrash");
+                        ConsoleOutput.OptionIndexPlacement = 0;
+                        Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                        prompts = new string[] { "Tiny Stockroom ", "- ", "Scattered floor trash\n\n", "Thoughts ", ":\n", "  Ew, yeah. That's where the smell comes from.\n", "  Carrying weight : ", Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n" };
+                        textcolors = new int[] { 4, 7, 6, 1, 7, 7, 7, 5 };
+                        LootInter.FormLists(Data, out LootOptions, out LootOptionsValues, out LootOptionsStoreValues, "TinyStockroomFloorScatteredTrash");
+
+                        while (esc2 == false)
+                        {
+                            esc2 = CreateLootUI(ConsoleOutput, prompts, textcolors, LootOptions, LootOptionsValues, specialsymbol, optioncolors, LootDataNames, LootData, LootOptionsStoreValues, "TinyStockroomFloorScatteredTrash");
+                            Data.InventoryTotalWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+                            prompts[7] = Data.InventoryTotalWeight + "/" + Data.MaxCarryingWeight + "KG\n\n";
+                        }
                         break;
                     case 5:
                         if (Data.EnvironmentalStatusData["TinyStockroomExplored"] == true)
@@ -177,7 +228,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                         }
                         else
                         {
-                            prompts = new string[] { "I grab a spraypaint can from my toolbelt, spraying a little doodle on the enterance's door. No way I'll forget about this room now.\n", "\n" };
+                            prompts = new string[] { "I grab a spraypaint can from my toolbelt, spraying a little doodle on the enterance's door. No way I'll forget about\n this room now.\n", "\n" };
                             textcolors = new int[] { 7, 7 };
                             options = new string[] { "Confirm" };
                             specialsymbol = new int[] { 0, 1 };
@@ -185,15 +236,48 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                             ConsoleOutput.OptionIndexPlacement = 0;
                             ConsoleOutput.RenderText(prompts, textcolors);
                             ConsoleOutput.RenderOptions(options, specialsymbol);
-                            ConsoleOutput.Run();
+                            ConsoleOutput.Run(false);
                             Data.EnvironmentalStatusData["TinyStockroomExplored"] = true;
                         }
                         break;
                     case 6:
                         esc = true;
                         break;
+                    default:
+                        break;
                 }
             }
+        }
+        private bool CreateLootUI(ConsoleOutput ConsoleOutput, string[] prompts, int[] textcolors, List<string> LootOptions, List<int> LootOptionsValues, int[] specialsymbol, int[] optioncolors, string[] LootDataNames, int[] LootData, List<int> LootOptionsStoreValues, string DictionaryKey)
+        {
+            string[] options = LootInter.Generate(LootOptionsValues.ToArray(), LootOptions.ToArray(), Data, out specialsymbol, out optioncolors);
+            ConsoleOutput.RenderText(prompts, textcolors);
+            ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
+            ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
+            SelectedIndex = ConsoleOutput.Run(false, out ConsoleKey KeyPressed);
+            bool esc2 = false;
+            if (SelectedIndex != options.Length - 1)
+            {
+                Data = LootInter.LootInteract(Data, SelectedIndex, LootOptionsValues, LootOptions, LootDataNames, LootData, LootOptionsStoreValues, DictionaryKey, KeyPressed);
+                esc2 = false;
+            }
+            else if (SelectedIndex == 999)
+            {
+                esc2 = false;
+            }
+            else
+            {
+                esc2 = true;
+            }
+            return esc2;
+        }
+        private void ResetLootOptions(string ObjectName)
+        {
+            LootOptions.Clear();
+            LootOptionsValues.Clear();
+            LootOptionsStoreValues.Clear();
+            LootData = Data.EnvironmentalLootData[ObjectName];
+            LootDataNames = Data.EnvironmentalLootDataNames[ObjectName];
         }
     }
 }

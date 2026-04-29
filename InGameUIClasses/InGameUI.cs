@@ -135,10 +135,37 @@ namespace LITOURGIYA___OBLATION
             bool test;
 
 
-            int[] format = { 5/*Scrap Polymers*/, 4/*Wood Scrap*/, 2/*Chemical Products*/, 1/*Glue bottle*/ };
+            int[] format = { 5/*Scrap Polymers*/, 4/*Wood Scrap*/, 2/*Bottle of acid*/, 1/*Glue bottle*/ };
             string[] namesOfFormat = { "Scrap polymers", "Wood scrap", "Bottle of acid", "Glue" };
             if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomLeftRackLoot", format)) test = true;
             if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomLeftRackLoot", namesOfFormat)) test = true;
+
+
+            format = new int[] { 1, 5, 12  };
+            namesOfFormat = new string[] { "Empty toolbox", "Cloth fragment", "Nails" };
+            if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomMiddleRackLoot", format)) test = true;
+            if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomMiddleRackLoot", namesOfFormat)) test = true;
+
+
+
+            format = new int[] { 4, 1, 2, 8, 1 };
+            namesOfFormat = new string[] { "Wood plank", "Bucket", "Corrugated panel", "Bolts", "Pipe" };
+            if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomRightRackLoot", format)) test = true;
+            if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomRightRackLoot", namesOfFormat)) test = true;
+
+
+
+            format = new int[] { 2, 1, 1, 1 };
+            namesOfFormat = new string[] { "Bandages", "Blood test", "Healing oitment", "Pain killers" };
+            if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomHangingMetalBox", format)) test = true;
+            if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomHangingMetalBox", namesOfFormat)) test = true;
+
+
+
+            format = new int[] { 6, 28 };
+            namesOfFormat = new string[] { "Spoiled paper", "Glass shard" };
+            if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomFloorScatteredTrash", format)) test = true;
+            if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomFloorScatteredTrash", namesOfFormat)) test = true;
 
 
             if (!Data.EnvironmentalStatusData.TryAdd("TinyStockroomExplored", false)) test = true;

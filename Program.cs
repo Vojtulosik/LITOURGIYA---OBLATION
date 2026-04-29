@@ -11,6 +11,7 @@ namespace LITOURGIYA___OBLATION
             FileManagement FileManager = new FileManagement();
             FileManager.CreateConfigFile();
             MainMenu.StartupMenu();
+            //Console.WriteLine("☼");//
         }
 
     }
