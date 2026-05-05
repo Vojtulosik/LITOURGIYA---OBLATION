@@ -141,8 +141,8 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                                     Data.FoundTools.Add(LootOptions[SelectedIndex]);
                                     Data.ToolIDs.Add(LootOptions[SelectedIndex] + ID);
                                     Data.ToolDurability.Add(DefineToolStartingDurability());
-                                    Data = IncreaseToolID(LootOptions[SelectedIndex], Data);
                                 }
+                                Data = IncreaseToolID(LootOptions[SelectedIndex], Data);
                             }
                             else
                             {
@@ -170,7 +170,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                         {
                             if (LootKind == 'T')
                             {
-                                int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                                int ID = GetToolID(LootOptions[SelectedIndex], Data) - 1;
                                 Data.InventoryValues.RemoveAt(Data.Inventory.IndexOf(LootOptions[SelectedIndex] + ID));
                                 Data.Inventory.Remove(LootOptions[SelectedIndex] + ID);
                                 LootOptionsStoreValues[LootTypeIndex] = 1;
@@ -202,7 +202,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 {
                     if (LootKind == 'T')
                     {
-                        int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                        int ID = GetToolID(LootOptions[SelectedIndex], Data) - 1;
                         Data.InventoryValues.RemoveAt(Data.Inventory.IndexOf(LootOptions[SelectedIndex] + ID));
                         Data.Inventory.Remove(LootOptions[SelectedIndex] + ID);
                         LootOptionsStoreValues[LootTypeIndex] = 1;
@@ -229,7 +229,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 {
                     if (LootKind == 'T')
                     {
-                        int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                        int ID = GetToolID(LootOptions[SelectedIndex], Data) - 1;
                         Data.InventoryValues.RemoveAt(Data.Inventory.IndexOf(LootOptions[SelectedIndex] + ID));
                         Data.Inventory.Remove(LootOptions[SelectedIndex] + ID);
                         LootOptionsStoreValues[LootTypeIndex] = 1;
@@ -255,7 +255,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 "Wood scrap" => 'R',
                 "Bottle of acid" => 'R',
                 "Glue" => 'R',
-                "Empty toolbox" => 'T',
+                "Toolbox" => 'T',
                 "Cloth fragment" => 'R',
                 "Nails" => 'R',
                 "Wood plank" => 'R',
@@ -292,7 +292,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
         {
             switch(tool)
             {
-                case "FlashLight":
+                case "Flashlight":
                     data.FlashLightIDCount--;
                     break;
                 case "Toolbox":
@@ -305,7 +305,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
         {
             switch (tool)
             {
-                case "FlashLight":
+                case "Flashlight":
                     data.FlashLightIDCount++;
                     break;
                 case "Toolbox":
@@ -319,7 +319,11 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
             int count = 0;
             for (int i = 0; i < data.Inventory.Count; i++)
             {
-                if (SupportedTools.Contains(data.Inventory[i].Substring(0, data.Inventory[i].Length - 1))) count++;
+                string ToolCheck = data.Inventory[i].Substring(0, data.Inventory[i].Length - 1);
+                if (tool == ToolCheck)
+                {
+                    if (SupportedTools.Contains(ToolCheck)) count++;
+                }
             }
             return count;
         }

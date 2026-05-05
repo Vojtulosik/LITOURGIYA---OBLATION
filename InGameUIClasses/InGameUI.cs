@@ -142,7 +142,7 @@ namespace LITOURGIYA___OBLATION
 
 
             format = new int[] { 1, 5, 12  };
-            namesOfFormat = new string[] { "Empty toolbox", "Cloth fragment", "Nails" };
+            namesOfFormat = new string[] { "Toolbox", "Cloth fragment", "Nails" };
             if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomMiddleRackLoot", format)) test = true;
             if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomMiddleRackLoot", namesOfFormat)) test = true;
 
