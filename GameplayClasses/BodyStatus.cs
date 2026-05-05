@@ -57,6 +57,7 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                     "Pain killers" => 0.62m,
                     "Spoiled paper" => 0.08m,
                     "Glass shard" => 0.04m,
+                    "Flashlight" => 0.67m,
                     _ => 0m
                 };
 
@@ -87,6 +88,7 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                 "Pain killers" => 0.62m,
                 "Spoiled paper" => 0.08m,
                 "Glass shard" => 0.04m,
+                "Flashlight" => 0.67m,
                 _ => 0m
             };
 

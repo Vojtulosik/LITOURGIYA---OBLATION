@@ -32,9 +32,13 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public List<string> Inventory { get; set; } = new();
         public List<int> InventoryValues { get; set; } = new();
         public List<int> ToolsDurability { get; set; } = new();
-        public List<string> Tools { get; set; } = new();
         public List<int> CarryingTools { get; set; } = new();
         public decimal InventoryTotalWeight { get; set; } = 0m;
         public decimal MaxCarryingWeight { get; set; } = 50;
+        public List<string> ToolIDs { get; set; } = new();
+        public List<decimal> ToolDurability { get; set; } = new();
+        public List<string> FoundTools { get; set; } = new();
+        public int FlashLightIDCount { get; set; } = 1;
+        public int ToolboxIDCount { get; set; } = 1;
     }
 }

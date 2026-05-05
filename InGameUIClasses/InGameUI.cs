@@ -162,8 +162,8 @@ namespace LITOURGIYA___OBLATION
 
 
 
-            format = new int[] { 6, 28 };
-            namesOfFormat = new string[] { "Spoiled paper", "Glass shard" };
+            format = new int[] { 6, 28, 1 };
+            namesOfFormat = new string[] { "Spoiled paper", "Glass shard", "Flashlight" };
             if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomFloorScatteredTrash", format)) test = true;
             if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomFloorScatteredTrash", namesOfFormat)) test = true;
 

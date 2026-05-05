@@ -10,7 +10,9 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
 {
     internal class LootInteractionGen
     {
+        private string[] SupportedTools = { "Flashlight", "Toolbox" };
         BodyStatus BodyStatus = new BodyStatus();
+        Random Rand = new Random();
         public string[] Generate(int[] values, string[] names, DataStructure Data, out int[] specialsymbol, out int[] optioncolors)
         {
             string[] options = new string[names.Length + 1];
@@ -19,6 +21,7 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 int ListValue = Data.Inventory.IndexOf(names[i]);
                 if (ListValue == -1) ListValue = 0;
                 else ListValue = Data.InventoryValues[ListValue];
+                if (SupportedTools.Contains(names[i])) ListValue = CountSpecificToolInInv(names[i], Data);
                 char itemType = DefineLootType(names[i]);
 
                 decimal weight = BodyStatus.CalcItemWeight(names[i], values[i]);
@@ -76,49 +79,111 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
         }
         public DataStructure LootInteract(DataStructure Data, int SelectedIndex, List<int> LootOptionsValues, List<string> LootOptions, string[] LootDataNames, int[] LootData, List<int> LootOptionsStoreValues, string DictionaryKey, ConsoleKey KeyPressed)
         {
+            decimal InventoryWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
+            decimal ItemWeight = 0m;
             if (SelectedIndex < 9999 && LootOptionsValues[SelectedIndex] > 0)
             {
                 int LootTypeIndex = LootDataNames.IndexOf(LootOptions[SelectedIndex]);
+                InventoryWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
                 switch (KeyPressed)
                 {
                     case ConsoleKey.Spacebar:
-                        if (!Data.Inventory.Contains(LootOptions[SelectedIndex]))
+                        ItemWeight = BodyStatus.CalcItemWeight(LootOptions[SelectedIndex], 1);
+                        char LootKind = DefineLootType(LootOptions[SelectedIndex]);
+                        if (InventoryWeight + ItemWeight <= Data.MaxCarryingWeight)
                         {
-                            Data.Inventory.Add(LootOptions[SelectedIndex]);
-                            Data.InventoryValues.Add(1);
-                            LootOptionsStoreValues[LootTypeIndex] -= 1;
-                            LootOptionsValues[SelectedIndex] -= 1;
-                            break;
-                        }
-
-                            Data.InventoryValues[Data.Inventory.IndexOf(LootOptions[SelectedIndex])] += 1;
-                            LootOptionsStoreValues[LootTypeIndex] -= 1;
-                            LootOptionsValues[SelectedIndex] -= 1;
-                        break;
-                    case ConsoleKey.Enter:
-                        if (!Data.Inventory.Contains(LootOptions[SelectedIndex]))
-                        {
-                            Data.Inventory.Add(LootOptions[SelectedIndex]);
-                            Data.InventoryValues.Add(LootOptionsValues[SelectedIndex]);
-                        }
-                        else
-                        {
-                            int invIndex = Data.Inventory.IndexOf(LootOptions[SelectedIndex]);
-                            if (invIndex != -1)
+                            if (LootKind == 'T')
                             {
-                                Data.InventoryValues[invIndex] += LootOptionsValues[SelectedIndex];
+                                int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                                Data.Inventory.Add(LootOptions[SelectedIndex] + ID);
+                                Data.InventoryValues.Add(1);
+                                LootOptionsStoreValues[LootTypeIndex] = 0;
+                                LootOptionsValues[SelectedIndex] = 0;
+                                if (!Data.ToolIDs.Contains(LootOptions[SelectedIndex] + ID))
+                                {
+                                    Data.FoundTools.Add(LootOptions[SelectedIndex]);
+                                    Data.ToolIDs.Add(LootOptions[SelectedIndex] + ID);
+                                    Data.ToolDurability.Add(DefineToolStartingDurability());
+                                }
+                                Data = IncreaseToolID(LootOptions[SelectedIndex], Data);
+                            }
+                            else
+                            {
+                                if (!Data.Inventory.Contains(LootOptions[SelectedIndex]))
+                                {
+                                    Data.Inventory.Add(LootOptions[SelectedIndex]);
+                                    Data.InventoryValues.Add(1);
+                                    LootOptionsValues[SelectedIndex] -= 1;
+                                    LootOptionsStoreValues[LootTypeIndex] -= 1;
+                                    break;
+                                }
+
+                                Data.InventoryValues[Data.Inventory.IndexOf(LootOptions[SelectedIndex])] += 1;
+                                LootOptionsValues[SelectedIndex] -= 1;
+                                LootOptionsStoreValues[LootTypeIndex] -= 1;
                             }
                         }
-                        LootOptionsStoreValues[LootTypeIndex] = 0;
-                        LootOptionsValues[SelectedIndex] = 0;
+                        break;
+                    case ConsoleKey.Enter:
+                        ItemWeight = BodyStatus.CalcItemWeight(LootOptions[SelectedIndex], LootData[LootTypeIndex]);
+                        LootKind = DefineLootType(LootOptions[SelectedIndex]);
+                        if (InventoryWeight + ItemWeight <= Data.MaxCarryingWeight)
+                        {
+                            if (LootKind == 'T')
+                            {
+                                int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                                Data.Inventory.Add(LootOptions[SelectedIndex] + ID);
+                                Data.InventoryValues.Add(1);
+                                LootOptionsStoreValues[LootTypeIndex] = 0;
+                                LootOptionsValues[SelectedIndex] = 0;
+                                if (!Data.ToolIDs.Contains(LootOptions[SelectedIndex] + ID))
+                                {
+                                    Data.FoundTools.Add(LootOptions[SelectedIndex]);
+                                    Data.ToolIDs.Add(LootOptions[SelectedIndex] + ID);
+                                    Data.ToolDurability.Add(DefineToolStartingDurability());
+                                    Data = IncreaseToolID(LootOptions[SelectedIndex], Data);
+                                }
+                            }
+                            else
+                            {
+                                if (!Data.Inventory.Contains(LootOptions[SelectedIndex]))
+                                {
+                                    Data.Inventory.Add(LootOptions[SelectedIndex]);
+                                    Data.InventoryValues.Add(LootOptionsValues[SelectedIndex]);
+                                }
+                                else
+                                {
+                                    int invIndex = Data.Inventory.IndexOf(LootOptions[SelectedIndex]);
+                                    if (invIndex != -1)
+                                    {
+                                        Data.InventoryValues[invIndex] += LootOptionsValues[SelectedIndex];
+                                    }
+                                }
+                                LootOptionsStoreValues[LootTypeIndex] = 0;
+                                LootOptionsValues[SelectedIndex] = 0;
+                            }
+                        }
                         break;
                     case ConsoleKey.Backspace:
+                        LootKind = DefineLootType(LootOptions[SelectedIndex]);
                         if (LootOptionsValues[SelectedIndex] < LootData[LootTypeIndex])
                         {
-                            Data.InventoryValues[Data.Inventory.IndexOf(LootOptions[SelectedIndex])] -= 1;
-                            LootOptionsStoreValues[LootTypeIndex] += 1;
-                            LootOptionsValues[SelectedIndex] += 1;
-                            break;
+                            if (LootKind == 'T')
+                            {
+                                int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                                Data.InventoryValues.RemoveAt(Data.Inventory.IndexOf(LootOptions[SelectedIndex] + ID));
+                                Data.Inventory.Remove(LootOptions[SelectedIndex] + ID);
+                                LootOptionsStoreValues[LootTypeIndex] = 1;
+                                LootOptionsValues[SelectedIndex] = 1;
+                                DecreaseToolID(LootOptions[SelectedIndex], Data);
+                            }
+                            else
+                            {
+                                Data.InventoryValues[Data.Inventory.IndexOf(LootOptions[SelectedIndex])] -= 1;
+                                LootOptionsStoreValues[LootTypeIndex] += 1;
+                                LootOptionsValues[SelectedIndex] += 1;
+                                break;
+                            }
                         }
                         break;
                 }
@@ -130,27 +195,53 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
             }
             else
             {
+                InventoryWeight = BodyStatus.CalcInventoryWeight(Data.Inventory, Data.InventoryValues);
                 int LootTypeIndex = LootDataNames.IndexOf(LootOptions[SelectedIndex]);
+                char LootKind = DefineLootType(LootOptions[SelectedIndex]);
                 if (KeyPressed == ConsoleKey.Enter)
                 {
-                    LootOptionsValues[SelectedIndex] = LootData[LootTypeIndex];
-                    LootOptionsStoreValues[LootTypeIndex] = LootData[LootTypeIndex];
-                    int ListIndex = Data.Inventory.IndexOf(LootOptions[SelectedIndex]);
-                    if (Data.InventoryValues[ListIndex] - LootData[LootTypeIndex] <= 0)
+                    if (LootKind == 'T')
                     {
-                        Data.Inventory.RemoveAt(ListIndex);
-                        Data.InventoryValues.RemoveAt(ListIndex);
+                        int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                        Data.InventoryValues.RemoveAt(Data.Inventory.IndexOf(LootOptions[SelectedIndex] + ID));
+                        Data.Inventory.Remove(LootOptions[SelectedIndex] + ID);
+                        LootOptionsStoreValues[LootTypeIndex] = 1;
+                        LootOptionsValues[SelectedIndex] = 1;
+                        DecreaseToolID(LootOptions[SelectedIndex], Data);
                     }
                     else
                     {
-                        Data.InventoryValues[ListIndex] -= LootData[LootTypeIndex];
+                        LootOptionsValues[SelectedIndex] = LootData[LootTypeIndex];
+                        LootOptionsStoreValues[LootTypeIndex] = LootData[LootTypeIndex];
+                        int ListIndex = Data.Inventory.IndexOf(LootOptions[SelectedIndex]);
+                        if (Data.InventoryValues[ListIndex] - LootData[LootTypeIndex] <= 0)
+                        {
+                            Data.Inventory.RemoveAt(ListIndex);
+                            Data.InventoryValues.RemoveAt(ListIndex);
+                        }
+                        else
+                        {
+                            Data.InventoryValues[ListIndex] -= LootData[LootTypeIndex];
+                        }
                     }
                 }
                 if (KeyPressed == ConsoleKey.Backspace)
                 {
-                    Data.InventoryValues[Data.Inventory.IndexOf(LootOptions[SelectedIndex])] -= 1;
-                    LootOptionsStoreValues[LootTypeIndex] += 1;
-                    LootOptionsValues[SelectedIndex] += 1;
+                    if (LootKind == 'T')
+                    {
+                        int ID = GetToolID(LootOptions[SelectedIndex], Data);
+                        Data.InventoryValues.RemoveAt(Data.Inventory.IndexOf(LootOptions[SelectedIndex] + ID));
+                        Data.Inventory.Remove(LootOptions[SelectedIndex] + ID);
+                        LootOptionsStoreValues[LootTypeIndex] = 1;
+                        LootOptionsValues[SelectedIndex] = 1;
+                        DecreaseToolID(LootOptions[SelectedIndex], Data);
+                    }
+                    else
+                    {
+                        Data.InventoryValues[Data.Inventory.IndexOf(LootOptions[SelectedIndex])] -= 1;
+                        LootOptionsStoreValues[LootTypeIndex] += 1;
+                        LootOptionsValues[SelectedIndex] += 1;
+                    }
                 }
             }
             Data.EnvironmentalLootData[DictionaryKey] = LootOptionsStoreValues.ToArray();
@@ -178,9 +269,59 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 "Pain killers" => 'M',
                 "Spoiled paper" => 'R',
                 "Glass shard" => 'R',
+                "Flashlight" => 'T',
                 _ => ' '
             };
             return type;
+        }
+        private decimal DefineToolStartingDurability()
+        {
+            decimal Corrosion = Rand.Next(19, 100);
+            return 100 * (Corrosion / 100);
+        }
+        private int GetToolID(string tool, DataStructure data)
+        {
+            int id = tool switch
+            {
+                "Flashlight" => data.FlashLightIDCount,
+                "Toolbox" => data.ToolboxIDCount
+            };
+            return id;
+        }
+        private DataStructure DecreaseToolID(string tool, DataStructure data)
+        {
+            switch(tool)
+            {
+                case "FlashLight":
+                    data.FlashLightIDCount--;
+                    break;
+                case "Toolbox":
+                    data.ToolboxIDCount--;
+                    break;
+            }
+            return data;
+        }
+        private DataStructure IncreaseToolID(string tool, DataStructure data)
+        {
+            switch (tool)
+            {
+                case "FlashLight":
+                    data.FlashLightIDCount++;
+                    break;
+                case "Toolbox":
+                    data.ToolboxIDCount++;
+                    break;
+            }
+            return data;
+        }
+        private int CountSpecificToolInInv(string tool, DataStructure data)
+        {
+            int count = 0;
+            for (int i = 0; i < data.Inventory.Count; i++)
+            {
+                if (SupportedTools.Contains(data.Inventory[i].Substring(0, data.Inventory[i].Length - 1))) count++;
+            }
+            return count;
         }
     }
 }
