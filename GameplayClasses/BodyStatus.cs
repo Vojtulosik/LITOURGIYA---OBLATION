@@ -1,4 +1,5 @@
 ﻿using LITOURGIYA___OBLATION.EngineClasses;
+using LITOURGIYA___OBLATION.EnvironmentGeneration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,17 +20,9 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
             if (data.HeatStatus > 0) sensations += " | " + AssetStation.HeatParameters[data.HeatStatus];
             return sensations;
         }
-        public void BodyCheckUI(ConsoleOutput ConsoleOutput)
+        public void BodyCheckUI(ConsoleOutput ConsoleOutput, DataStructure Data)
         {
-            string[] prompts = { "test\n\n" };
-            int[] textcolors = { 6 };
-            string[] options = { "back" };
-            int[] specialsymbol = { 0, 1 };
-            ConsoleOutput.OptionIndexPlacement = 0;
-            ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol);
-            ConsoleOutput.RenderText(prompts, textcolors);
-            ConsoleOutput.RenderOptions(options, specialsymbol);
-            ConsoleOutput.Run(true);
+            InventoryUI(ConsoleOutput, Data);
         }
         public decimal CalcInventoryWeight(List<string> inventory, List<int> values)
         {
@@ -94,5 +87,108 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
 
             return Math.Floor(count * itemWeight * 100) / 100;
         }
+        private char DefineLootType(string item)
+        {
+            char type = item switch
+            {
+                "Scrap polymers" => 'R',
+                "Wood scrap" => 'R',
+                "Bottle of acid" => 'R',
+                "Glue" => 'R',
+                "Toolbox" => 'T',
+                "Cloth fragment" => 'R',
+                "Nails" => 'R',
+                "Wood plank" => 'R',
+                "Bucket" => 'R',
+                "Corrugated panel" => 'R',
+                "Bolts" => 'R',
+                "Pipe" => 'R',
+                "Bandages" => 'M',
+                "Blood test" => 'M',
+                "Healing ointment" => 'M',
+                "Pain killers" => 'M',
+                "Spoiled paper" => 'R',
+                "Glass shard" => 'R',
+                "Flashlight" => 'T',
+                _ => ' '
+            };
+            return type;
+        }
+        private void InventoryUI(ConsoleOutput ConsoleOutput, DataStructure Data)
+        {
+            string thought = "\n   Carrying the world globe on my back.";
+            string[] prompts = {
+                "Inventory ", "- ", Data.EquippedBackpack + "\n",
+                "Carrying weight", " : " + CalcInventoryWeight(Data.Inventory, Data.InventoryValues) + "/" + Data.MaxCarryingWeight + " KG\n",
+                "Thoughts", " : " + thought + "\n\n",
+                "[", "Loot", "/", "Holstered Tools", "]", "  Pocket : 1/10\n"
+            };
+            int[] textcolors = { 
+                14, 6,
+                5, 1, 6,
+                1, 7,
+                6, 5, 6, 7, 6, 6
+            };
+            string[] HorizontalOptions = {
+                "Next", "Previous", "View Holstered tools", "Zip up the backpack"
+            };
+            int[] HorizontalOptionSymbols = {
+                5, 6, 5, 6, 5, 6, 5, 6
+            };
+            int[] HorizontalOptionColors = { 
+                6, 6, 6, 6
+            };
+            int repeat = (Data.Inventory.Count % 15 == 0) ? 15 : Data.Inventory.Count;
+            string[] InventoryOptions = new string[repeat];
+            int[] InventorySpecialsymbol = new int[repeat * 2];
+            int[] InventoryOptionColors = new int[repeat];
+            int[] HorizontalLineStructure = new int[repeat + 3];
+            HorizontalLineStructure[0] = 6;
+            int SpecialSymbolIndex = 0;
+            ConsoleOutput.OptionIndexPlacement = 1;
+            if (Data.Inventory.Count > 0)
+            {
+                for (int i = 1; i < repeat + 1; i++)
+                {
+                    decimal ItemWeight = CalcItemWeight(Data.Inventory[i - 1], Data.InventoryValues[i - 1]);
+                    InventoryOptions[i - 1] = "[" + DefineLootType(Data.Inventory[i - 1]) + "] " + Data.Inventory[i - 1] + " [" + Data.InventoryValues[i - 1] + "x] " + ItemWeight + " KG";
+                    InventorySpecialsymbol[SpecialSymbolIndex] = 7;
+                    InventorySpecialsymbol[SpecialSymbolIndex + 1] = 7;
+                    InventoryOptionColors[i - 1] = 7;
+                    SpecialSymbolIndex += 2;
+                    HorizontalLineStructure[i] = 1;
+                }
+                HorizontalLineStructure[HorizontalLineStructure.Length - 2] = 3;
+                HorizontalLineStructure[HorizontalLineStructure.Length - 1] = 1;
+                HorizontalOptions = [.. InventoryOptions, .. HorizontalOptions];
+                HorizontalOptionColors = [.. InventoryOptionColors, .. HorizontalOptionColors];
+                HorizontalOptionSymbols = [.. InventorySpecialsymbol, .. HorizontalOptionSymbols];
+            }
+            ConsoleOutput.OptionIndexPlacement = 0;
+            ConsoleOutput.UpdateValues(prompts, textcolors, null, null, null, HorizontalOptions, HorizontalOptionColors, HorizontalOptionSymbols, HorizontalLineStructure);
+            ConsoleOutput.RenderText(prompts, textcolors);
+            ConsoleOutput.RenderInventoryFilters();
+            ConsoleOutput.RenderHorizontalOptions();
+            ConsoleOutput.RunHorizontal(true, Data);
+        }
     }
 }
+
+/*
+            ConsoleColor.Red, //0
+            ConsoleColor.Yellow, //1
+            ConsoleColor.Green, //2
+            ConsoleColor.Blue, //3
+            ConsoleColor.Magenta, //4
+            ConsoleColor.Cyan, //5
+            ConsoleColor.White, //6
+            ConsoleColor.Gray, //7
+            ConsoleColor.DarkGray, //8
+            ConsoleColor.Black, //9
+            ConsoleColor.DarkRed, //10
+            ConsoleColor.DarkYellow, //11
+            ConsoleColor.DarkGreen, //12
+            ConsoleColor.DarkBlue, //13
+            ConsoleColor.DarkMagenta, //14
+            ConsoleColor.DarkCyan, //15
+*/

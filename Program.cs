@@ -4,7 +4,6 @@ namespace LITOURGIYA___OBLATION
     internal class Program
     {
         public static void Main(string[] args)
-
         {
             Console.Title = "LITOURGIYA - Oblation";
             Console.ResetColor();

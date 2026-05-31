@@ -1,7 +1,9 @@
-﻿using LITOURGIYA___OBLATION.GameplayClasses;
+﻿using LITOURGIYA___OBLATION.EngineClasses;
+using LITOURGIYA___OBLATION.GameplayClasses;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.Metrics;
 using System.Diagnostics.Tracing;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
@@ -42,8 +44,8 @@ namespace LITOURGIYA___OBLATION
         private bool[] TextSound;
         private string[] Symbols =
         {
-                "<<  ", "  >>", "(  ", "  )", "  ", "[", "]", "", " (!)]"
-                //0    1       2      3      4     5    6    7   8
+                "<<  ", "  >>", "(  ", "  )", "  ", "[", "]", "", " (!)]", "] - ", ",  ", "/", "  < [", ">", "  ["
+                //0    1       2      3      4     5    6    7   8        9       10     11   12       13   14
         };
         private int[] SpecialSymbol;
         private int[] OptionSpecialColor;
@@ -53,8 +55,13 @@ namespace LITOURGIYA___OBLATION
         private string UserInput = "";
         public int OptionIndexPlacement = 0;
         public char IndexSymbol = '*';
+        public int OptionHorizontalIndexPlacement = 0;
+        public int InventoryPage = 0;
         BodyStatus BodyStatus = new BodyStatus();
-
+        private string[] HorizontalOptions;
+        private int[] HorizontalOptionColors;
+        private int[] HorizontalOptionSymbols;
+        private int[] HorizontalLineStructure;
 
         public ConsoleOutput(string[] options, string[] prompts, int[] textcolors, int[] delay, bool[] sound, int textcolor, int highlightcolor, int[] specialsymbol, int[] optiontextcolor, string[] optiontext)
         {
@@ -68,7 +75,7 @@ namespace LITOURGIYA___OBLATION
             SpecialSymbol = specialsymbol;
             OptionSpecialColor = optiontextcolor;
             OptionsText = optiontext;
-            
+
         }
         FileManagement FileManager = new FileManagement();
         SoundHub soundhub = new SoundHub();
@@ -91,6 +98,18 @@ namespace LITOURGIYA___OBLATION
             Options = options;
             SpecialSymbol = specialsymbol;
             OptionSpecialColor = optionscolors;
+        }
+        public void UpdateValues(string[] prompts, int[] colors, string[] options, int[] specialsymbol, int[] optionscolors, string[] horizontaloptions, int[] horizontaloptioncolors, int[] horizontaloptionsymbols, int[] horizontallinestructure)
+        {
+            Prompts = prompts;
+            Textcolors = colors;
+            Options = options;
+            SpecialSymbol = specialsymbol;
+            OptionSpecialColor = optionscolors;
+            HorizontalOptions = horizontaloptions;
+            HorizontalOptionColors = horizontaloptioncolors;
+            HorizontalOptionSymbols = horizontaloptionsymbols;
+            HorizontalLineStructure = horizontallinestructure;
         }
         public void RenderText(string[] prompt, int[] colors)
         {
@@ -184,7 +203,7 @@ namespace LITOURGIYA___OBLATION
                 }
                 if (options[i] != "")
                 {
-                        Console.WriteLine($"{IndexSymbol} <<  {options[i]}  >>");
+                    Console.WriteLine($"{IndexSymbol} <<  {options[i]}  >>");
                 }
                 else
                 {
@@ -239,7 +258,7 @@ namespace LITOURGIYA___OBLATION
             }
             switch (SelectAnimation)
             {
-                case 1: 
+                case 1:
                     Console.ResetColor();
                     string[] AnimationSymbols =
                     {
@@ -268,6 +287,100 @@ namespace LITOURGIYA___OBLATION
             Console.ResetColor();
             Console.CursorVisible = false;
             return input;
+        }
+        public void RenderInventoryFilters()
+        {
+            string[] HorizontalOptions = {
+
+                "", "R", " - Resources", ",",
+                "   ", "C", " - Consumables", ",",
+                "   ", "T", " - Tools", ",",
+                "   ", "M", " - Medical", ",",
+                "   ", "E", " - Expendables", ",",
+                "   ", "G", " - Gear", " >"
+
+            };
+            int[] HorizontalOptionColors = {
+                7, 1, 7, 7,
+                7, 2, 7, 7,
+                7, 4, 7, 7,
+                7, 0, 7, 7,
+                7, 3, 7, 7,
+                7, 5, 7, 7
+            };
+            Console.Write("   < ");
+            int SelectedOption = OptionHorizontalIndexPlacement * 4 + 1;
+            if (SelectedOption == 0) SelectedOption++;
+            bool HighlightOption = false;
+            int counter = 0;
+            for (int i = 0; i < HorizontalOptions.Length; i++)
+            {
+                if ((SelectedOption == i || HighlightOption == true) && OptionIndexPlacement == 0)
+                {
+                    Console.BackgroundColor = TextHighlightColor;
+                    Console.ForegroundColor = TextColor;
+                    IndexSymbol = FileManager.LoadIndexChar();
+                    HighlightOption = true;
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = availabletextcolors[HorizontalOptionColors[i]];
+                    IndexSymbol = ' ';
+                }
+                if (SelectedOption == i && OptionIndexPlacement == 0)
+                {
+                    Console.Write($"{IndexSymbol}{HorizontalOptions[i]}");
+                }
+                else
+                {
+                    Console.Write($"{HorizontalOptions[i]}");
+                }
+                if (HighlightOption == true) counter++;
+                if (counter == 2) HighlightOption = false;
+            }
+            Console.Write("\n");
+        }
+        public void RenderHorizontalOptions()
+        {
+            int LineStructureCount = 0;
+            int LineStructureIndex = 1;
+            int SpecialSymbolIndex = 0;
+            Console.Write("  ");
+            for (int i = 0; i < HorizontalOptions.Length; i++)
+            {
+                if (OptionHorizontalIndexPlacement == LineStructureCount && OptionIndexPlacement == LineStructureIndex)
+                {
+                    Console.BackgroundColor = TextHighlightColor;
+                    Console.ForegroundColor = TextColor;
+                    IndexSymbol = FileManager.LoadIndexChar();
+                }
+                else
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = availabletextcolors[HorizontalOptionColors[i]];
+                    IndexSymbol = ' ';
+                }
+                if (OptionHorizontalIndexPlacement == LineStructureCount && OptionIndexPlacement == LineStructureIndex)
+                {
+                    Console.Write($"{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex]]}{IndexSymbol}{HorizontalOptions[i]}{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex + 1]]}");
+                }
+                else
+                {
+                    Console.Write($"{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex]]}{HorizontalOptions[i]}{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex + 1]]}");
+                }
+                LineStructureCount++;
+                if (HorizontalLineStructure[LineStructureIndex] == LineStructureCount)
+                {
+                    Console.Write("\n");
+                    LineStructureIndex++;
+                    LineStructureCount = 0;
+                }
+                SpecialSymbolIndex += 2;
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = availabletextcolors[HorizontalOptionColors[i]];
+                Console.Write("  ");
+            }
         }
         public void RenderNote(string[] prompt, bool delay)
         {
@@ -417,7 +530,7 @@ namespace LITOURGIYA___OBLATION
             } while (KeyPressed != ConsoleKey.Enter);
             return OptionIndexPlacement;
         }
-        public int Run(bool ObjectExists)
+        public int Run(bool ObjectExists, DataStructure Data)
         {
             ConsoleKey KeyPressed;
             do
@@ -428,7 +541,7 @@ namespace LITOURGIYA___OBLATION
                 {
                     if (!ObjectExists)
                     {
-                        BodyStatus.BodyCheckUI(this);
+                        BodyStatus.BodyCheckUI(this, Data);
                         return 9999;
                     }
                 }
@@ -519,7 +632,7 @@ namespace LITOURGIYA___OBLATION
             } while (KeyPressed != ConsoleKey.Enter);
             return OptionIndexPlacement;
         }
-        public int Run(bool ObjectExists, out ConsoleKey KeyPressed)
+        public int Run(bool ObjectExists, out ConsoleKey KeyPressed, DataStructure Data)
         {
             do
             {
@@ -529,7 +642,7 @@ namespace LITOURGIYA___OBLATION
                 {
                     if (!ObjectExists)
                     {
-                        BodyStatus.BodyCheckUI(this);
+                        BodyStatus.BodyCheckUI(this, Data);
                         return 9999;
                     }
                 }
@@ -618,6 +731,58 @@ namespace LITOURGIYA___OBLATION
                     }
                 }
             } while (KeyPressed != ConsoleKey.Enter && KeyPressed != ConsoleKey.Spacebar && KeyPressed != ConsoleKey.Backspace);
+            return OptionIndexPlacement;
+        }
+        public int RunHorizontal(bool ObjectExists, DataStructure Data)
+        {
+            ConsoleKey KeyPressed;
+            do
+            {
+                ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+                KeyPressed = keyInfo.Key;
+                if (KeyPressed == ConsoleKey.B)
+                {
+                    if (!ObjectExists)
+                    {
+                        BodyStatus.BodyCheckUI(this, Data);
+                        return 9999;
+                    }
+                }
+                if (HorizontalLineStructure.Length > 1)
+                {
+                    if (KeyPressed == ConsoleKey.UpArrow)
+                    {
+                        if (OptionIndexPlacement == 0) OptionIndexPlacement = HorizontalLineStructure.Length - 1;
+                        else OptionIndexPlacement--;
+                        OptionHorizontalIndexPlacement = 0;
+                    }
+                    if (KeyPressed == ConsoleKey.DownArrow)
+                    {
+                        if (OptionIndexPlacement == HorizontalLineStructure.Length - 1) OptionIndexPlacement = 0;
+                        else OptionIndexPlacement++;
+                        OptionHorizontalIndexPlacement = 0;
+                    }
+                }
+                if (HorizontalLineStructure[OptionIndexPlacement] > 1)
+                {
+                    if (KeyPressed == ConsoleKey.RightArrow)
+                    {
+                        if (OptionHorizontalIndexPlacement == HorizontalLineStructure[OptionIndexPlacement] - 1) OptionHorizontalIndexPlacement = 0;
+                        else OptionHorizontalIndexPlacement++;
+                    }
+                    if (KeyPressed == ConsoleKey.LeftArrow)
+                    {
+                        if (OptionHorizontalIndexPlacement == 0) OptionHorizontalIndexPlacement = HorizontalLineStructure[OptionIndexPlacement] - 1;
+                        else OptionHorizontalIndexPlacement--;
+                    }
+                }
+                if (KeyPressed == ConsoleKey.UpArrow || KeyPressed == ConsoleKey.DownArrow || KeyPressed == ConsoleKey.RightArrow || KeyPressed == ConsoleKey.LeftArrow)
+                {
+                    RenderText(Prompts, Textcolors);
+                    RenderInventoryFilters();
+                    RenderHorizontalOptions();
+                }
+            } while (KeyPressed != ConsoleKey.Enter);
             return OptionIndexPlacement;
         }
     }

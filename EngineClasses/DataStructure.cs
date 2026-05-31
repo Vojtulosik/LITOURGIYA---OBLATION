@@ -40,5 +40,6 @@ namespace LITOURGIYA___OBLATION.EngineClasses
         public List<string> FoundTools { get; set; } = new();
         public int FlashLightIDCount { get; set; } = 1;
         public int ToolboxIDCount { get; set; } = 1;
+        public string EquippedBackpack { get; set; } = "Torn sling backpack";
     }
 }

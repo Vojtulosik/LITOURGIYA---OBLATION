@@ -91,7 +91,7 @@ namespace LITOURGIYA___OBLATION
                 ConsoleOutput.OptionIndexPlacement = 1;
                 ConsoleOutput.RenderText(prompts, textcolors);
                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                int SelectedIndex = ConsoleOutput.Run(false);
+                int SelectedIndex = ConsoleOutput.Run(false, Data);
                 bool esc = false;
                 switch (SelectedIndex)
                 {
@@ -274,7 +274,7 @@ namespace LITOURGIYA___OBLATION
                                 ConsoleOutput.OptionIndexPlacement = 0;
                                 ConsoleOutput.RenderText(prompts, textcolors);
                                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                                SelectedIndex = ConsoleOutput.Run(false);
+                                SelectedIndex = ConsoleOutput.Run(false, Data);
                                 switch (SelectedIndex)
                                 {
                                     case 0:

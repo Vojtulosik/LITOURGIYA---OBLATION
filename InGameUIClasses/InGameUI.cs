@@ -28,10 +28,10 @@ namespace LITOURGIYA___OBLATION
             Data = FileManager.LoadData(SoulFilePlacement);
             if (Data.InGameDay == 0)
             {
-                //Intro();
+                Intro();
                 Console.Clear();
-                //LoadNotes NoteUI = new LoadNotes(HighlightChosenColor, HighlightChosenColor);
-                //NoteUI.Render(0);
+                LoadNotes NoteUI = new LoadNotes(HighlightChosenColor, HighlightChosenColor);
+                NoteUI.Render(0);
                 string[] options = { "Close" };
                 int[] specialsymbols = { 0, 1 };
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, null, null, null, null, TextChosenColor, HighlightChosenColor, specialsymbols, null, null);

@@ -67,7 +67,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
                 ConsoleOutput.RenderText(prompts, textcolors);
                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                SelectedIndex = ConsoleOutput.Run(false);
+                SelectedIndex = ConsoleOutput.Run(false, Data);
                 switch (SelectedIndex)
                 {
                     case 0:
@@ -142,7 +142,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                 ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
                 ConsoleOutput.RenderText(prompts, textcolors);
                 ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
-                SelectedIndex = ConsoleOutput.Run(false);
+                SelectedIndex = ConsoleOutput.Run(false, Data);
                 bool esc2 = false;
                 switch (SelectedIndex)
                 {
@@ -236,7 +236,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                             ConsoleOutput.OptionIndexPlacement = 0;
                             ConsoleOutput.RenderText(prompts, textcolors);
                             ConsoleOutput.RenderOptions(options, specialsymbol);
-                            ConsoleOutput.Run(false);
+                            ConsoleOutput.Run(false, Data);
                             Data.EnvironmentalStatusData["TinyStockroomExplored"] = true;
                         }
                         break;
@@ -254,7 +254,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
             ConsoleOutput.RenderText(prompts, textcolors);
             ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
             ConsoleOutput.UpdateValues(prompts, textcolors, options, specialsymbol, optioncolors);
-            SelectedIndex = ConsoleOutput.Run(false, out ConsoleKey KeyPressed);
+            SelectedIndex = ConsoleOutput.Run(false, out ConsoleKey KeyPressed, Data);
             bool esc2 = false;
             if (SelectedIndex != options.Length - 1)
             {
