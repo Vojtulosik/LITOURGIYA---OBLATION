@@ -62,6 +62,7 @@ namespace LITOURGIYA___OBLATION
         private int[] HorizontalOptionColors;
         private int[] HorizontalOptionSymbols;
         private int[] HorizontalLineStructure;
+        public int[] SelectedInventoryFilters = new int[6];
 
         public ConsoleOutput(string[] options, string[] prompts, int[] textcolors, int[] delay, bool[] sound, int textcolor, int highlightcolor, int[] specialsymbol, int[] optiontextcolor, string[] optiontext)
         {
@@ -313,8 +314,11 @@ namespace LITOURGIYA___OBLATION
             if (SelectedOption == 0) SelectedOption++;
             bool HighlightOption = false;
             int counter = 0;
+            int OptionRenderIndex = 0;
+            int OptionRenderCount = 0;
             for (int i = 0; i < HorizontalOptions.Length; i++)
             {
+                OptionRenderCount++;
                 if ((SelectedOption == i || HighlightOption == true) && OptionIndexPlacement == 0)
                 {
                     Console.BackgroundColor = TextHighlightColor;
@@ -328,6 +332,11 @@ namespace LITOURGIYA___OBLATION
                     Console.ForegroundColor = availabletextcolors[HorizontalOptionColors[i]];
                     IndexSymbol = ' ';
                 }
+                if (SelectedInventoryFilters[OptionRenderIndex] == 1 && OptionRenderCount != 1 && OptionRenderCount != 4)
+                {
+                    Console.BackgroundColor = TextHighlightColor;
+                    Console.ForegroundColor = TextColor;
+                }
                 if (SelectedOption == i && OptionIndexPlacement == 0)
                 {
                     Console.Write($"{IndexSymbol}{HorizontalOptions[i]}");
@@ -338,6 +347,11 @@ namespace LITOURGIYA___OBLATION
                 }
                 if (HighlightOption == true) counter++;
                 if (counter == 2) HighlightOption = false;
+                if (OptionRenderCount == 4)
+                {
+                    OptionRenderIndex += 1;
+                    OptionRenderCount = 0;
+                }
             }
             Console.Write("\n");
         }
@@ -776,14 +790,16 @@ namespace LITOURGIYA___OBLATION
                         else OptionHorizontalIndexPlacement--;
                     }
                 }
-                if (KeyPressed == ConsoleKey.UpArrow || KeyPressed == ConsoleKey.DownArrow || KeyPressed == ConsoleKey.RightArrow || KeyPressed == ConsoleKey.LeftArrow)
+                if (KeyPressed == ConsoleKey.UpArrow || KeyPressed == ConsoleKey.DownArrow || KeyPressed == ConsoleKey.RightArrow || KeyPressed == ConsoleKey.LeftArrow || KeyPressed == ConsoleKey.Enter)
                 {
                     RenderText(Prompts, Textcolors);
                     RenderInventoryFilters();
                     RenderHorizontalOptions();
                 }
             } while (KeyPressed != ConsoleKey.Enter);
-            return OptionIndexPlacement;
+            int store = OptionIndexPlacement;
+            OptionIndexPlacement = 0;
+            return store;
         }
     }
 }

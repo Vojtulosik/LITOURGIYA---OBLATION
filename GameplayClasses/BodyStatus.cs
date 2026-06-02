@@ -2,7 +2,9 @@
 using LITOURGIYA___OBLATION.EnvironmentGeneration;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LITOURGIYA___OBLATION.GameplayClasses
 {
@@ -138,20 +140,131 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
             int[] HorizontalOptionColors = { 
                 6, 6, 6, 6
             };
-            int repeat = (Data.Inventory.Count % 15 == 0) ? 15 : Data.Inventory.Count;
-            string[] InventoryOptions = new string[repeat];
-            int[] InventorySpecialsymbol = new int[repeat * 2];
-            int[] InventoryOptionColors = new int[repeat];
-            int[] HorizontalLineStructure = new int[repeat + 3];
+            string[] InventoryOptions;
+            int[] InventorySpecialsymbol;
+            int[] InventoryOptionColors;
+            int[] HorizontalLineStructure;
+            int[] SelectedInventoryFilters;
+            if (ConsoleOutput.SelectedInventoryFilters == null) SelectedInventoryFilters = new int[6];
+            else SelectedInventoryFilters = ConsoleOutput.SelectedInventoryFilters;
+            InventoryFilter(out InventoryOptions, out InventoryOptionColors, out InventorySpecialsymbol, out HorizontalLineStructure, Data, SelectedInventoryFilters);
+            HorizontalOptions = [.. InventoryOptions, .. HorizontalOptions];
+            HorizontalOptionColors = [.. InventoryOptionColors, .. HorizontalOptionColors];
+            HorizontalOptionSymbols = [.. InventorySpecialsymbol, .. HorizontalOptionSymbols];
+            ConsoleOutput.OptionIndexPlacement = 0;
+            ConsoleOutput.UpdateValues(prompts, textcolors, null, null, null, HorizontalOptions, HorizontalOptionColors, HorizontalOptionSymbols, HorizontalLineStructure);
+            ConsoleOutput.RenderText(prompts, textcolors);
+            ConsoleOutput.RenderInventoryFilters();
+            ConsoleOutput.RenderHorizontalOptions();
+            int SelectedIndex = ConsoleOutput.RunHorizontal(true, Data);
+            while (SelectedIndex != HorizontalLineStructure.Length - 1)
+            {
+                switch (SelectedIndex)
+                {
+                    case 0:
+                        if (ConsoleOutput.SelectedInventoryFilters[ConsoleOutput.OptionHorizontalIndexPlacement] == 0) ConsoleOutput.SelectedInventoryFilters[ConsoleOutput.OptionHorizontalIndexPlacement] = 1;
+                        else ConsoleOutput.SelectedInventoryFilters[ConsoleOutput.OptionHorizontalIndexPlacement] = 0;
+                        InventoryFilter(out InventoryOptions, out InventoryOptionColors, out InventorySpecialsymbol, out HorizontalLineStructure, Data, SelectedInventoryFilters);
+                        thought = "\n   Carrying the world globe on my back.";
+                        prompts = new string[] {
+                            "Inventory ", "- ", Data.EquippedBackpack + "\n",
+                            "Carrying weight", " : " + CalcInventoryWeight(Data.Inventory, Data.InventoryValues) + "/" + Data.MaxCarryingWeight + " KG\n",
+                            "Thoughts", " : " + thought + "\n\n",
+                            "[", "Loot", "/", "Holstered Tools", "]", "  Pocket : 1/10\n"
+                        };
+                        textcolors = new int[] {
+                            14, 6,
+                            5, 1, 6,
+                            1, 7,
+                            6, 5, 6, 7, 6, 6
+                        };
+                        HorizontalOptions = new string[] {
+                            "Next", "Previous", "View Holstered tools", "Zip up the backpack"
+                        };
+                        HorizontalOptionSymbols = new int[] {
+                            5, 6, 5, 6, 5, 6, 5, 6
+                        };
+                        HorizontalOptionColors = new int[] {
+                            6, 6, 6, 6
+                        };
+                        HorizontalOptions = [.. InventoryOptions, .. HorizontalOptions];
+                        HorizontalOptionColors = [.. InventoryOptionColors, .. HorizontalOptionColors];
+                        HorizontalOptionSymbols = [.. InventorySpecialsymbol, .. HorizontalOptionSymbols];
+                        ConsoleOutput.UpdateValues(prompts, textcolors, null, null, null, HorizontalOptions, HorizontalOptionColors, HorizontalOptionSymbols, HorizontalLineStructure);
+                        ConsoleOutput.RenderText(prompts, textcolors);
+                        ConsoleOutput.RenderInventoryFilters();
+                        ConsoleOutput.RenderHorizontalOptions();
+                        SelectedIndex = ConsoleOutput.RunHorizontal(true, Data);
+                        break;
+                }
+            }
+        }
+        private void InventoryFilter(out string[] InventoryOptions, out int[] InventoryOptionColors, out int[] InventorySpecialsymbol, out int[] HorizontalLineStructure, DataStructure Data, int[] SelectedInventoryFilters)
+        {
+            char[] FilterOptions = new char[6];
+            FilterOptions[0] = 'R';
+            FilterOptions[1] = 'C';
+            FilterOptions[2] = 'T';
+            FilterOptions[3] = 'M';
+            FilterOptions[4] = 'E';
+            FilterOptions[5] = 'G';
+            List<string> FilteredOptions = new List<string>();
+            List<int> FilteredOptionValues = new List<int>();
+            if (SelectedInventoryFilters.Contains(1))
+            {
+                for (int i = 0; i < Data.Inventory.Count; i++)
+                {
+                    string item = Data.Inventory[i];
+
+
+                    string refineditem = "";
+                    foreach(char c in item)
+                    {
+                        if (!char.IsNumber(c)) refineditem += c; 
+                    }
+
+
+                    int value = Data.InventoryValues[i];
+                    char type = DefineLootType(refineditem);
+                    int TypeIndex = FilterOptions.IndexOf(type);
+                    if (SelectedInventoryFilters[TypeIndex] == 1)
+                    {
+                        FilteredOptions.Add(refineditem);
+                        FilteredOptionValues.Add(value);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < Data.Inventory.Count; i++)
+                {
+                    string item = Data.Inventory[i];
+
+                    string refineditem = "";
+                    foreach (char c in item)
+                    {
+                        if (!char.IsNumber(c)) refineditem += c;
+                    }
+
+                    FilteredOptions.Add(refineditem);
+                    int value = Data.InventoryValues[i];
+                    FilteredOptionValues.Add(value);
+                }
+            }
+
+            int repeat = (FilteredOptions.Count % 15 == 0 && FilteredOptions.Count > 0) ? 15 : FilteredOptions.Count;
+            InventoryOptions = new string[repeat];
+            InventorySpecialsymbol = new int[repeat * 2];
+            InventoryOptionColors = new int[repeat];
+            HorizontalLineStructure = new int[repeat + 3];
             HorizontalLineStructure[0] = 6;
             int SpecialSymbolIndex = 0;
-            ConsoleOutput.OptionIndexPlacement = 1;
-            if (Data.Inventory.Count > 0)
+            if (FilteredOptions.Count > 0)
             {
                 for (int i = 1; i < repeat + 1; i++)
                 {
-                    decimal ItemWeight = CalcItemWeight(Data.Inventory[i - 1], Data.InventoryValues[i - 1]);
-                    InventoryOptions[i - 1] = "[" + DefineLootType(Data.Inventory[i - 1]) + "] " + Data.Inventory[i - 1] + " [" + Data.InventoryValues[i - 1] + "x] " + ItemWeight + " KG";
+                    decimal ItemWeight = CalcItemWeight(FilteredOptions[i - 1], FilteredOptionValues[i - 1]);
+                    InventoryOptions[i - 1] = "[" + DefineLootType(FilteredOptions[i - 1]) + "] " + FilteredOptions[i - 1] + " [" + FilteredOptionValues[i - 1] + "x] " + ItemWeight + " KG";
                     InventorySpecialsymbol[SpecialSymbolIndex] = 7;
                     InventorySpecialsymbol[SpecialSymbolIndex + 1] = 7;
                     InventoryOptionColors[i - 1] = 7;
@@ -160,16 +273,7 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                 }
                 HorizontalLineStructure[HorizontalLineStructure.Length - 2] = 3;
                 HorizontalLineStructure[HorizontalLineStructure.Length - 1] = 1;
-                HorizontalOptions = [.. InventoryOptions, .. HorizontalOptions];
-                HorizontalOptionColors = [.. InventoryOptionColors, .. HorizontalOptionColors];
-                HorizontalOptionSymbols = [.. InventorySpecialsymbol, .. HorizontalOptionSymbols];
             }
-            ConsoleOutput.OptionIndexPlacement = 0;
-            ConsoleOutput.UpdateValues(prompts, textcolors, null, null, null, HorizontalOptions, HorizontalOptionColors, HorizontalOptionSymbols, HorizontalLineStructure);
-            ConsoleOutput.RenderText(prompts, textcolors);
-            ConsoleOutput.RenderInventoryFilters();
-            ConsoleOutput.RenderHorizontalOptions();
-            ConsoleOutput.RunHorizontal(true, Data);
         }
     }
 }

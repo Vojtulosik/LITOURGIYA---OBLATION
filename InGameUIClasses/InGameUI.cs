@@ -156,7 +156,7 @@ namespace LITOURGIYA___OBLATION
 
 
             format = new int[] { 2, 1, 1, 1 };
-            namesOfFormat = new string[] { "Bandages", "Blood test", "Healing oitment", "Pain killers" };
+            namesOfFormat = new string[] { "Bandages", "Blood test", "Healing ointment", "Pain killers" };
             if (!Data.EnvironmentalLootData.TryAdd("TinyStockroomHangingMetalBox", format)) test = true;
             if (!Data.EnvironmentalLootDataNames.TryAdd("TinyStockroomHangingMetalBox", namesOfFormat)) test = true;
 
