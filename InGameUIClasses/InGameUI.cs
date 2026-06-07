@@ -16,14 +16,13 @@ namespace LITOURGIYA___OBLATION
         private int TextChosenColor;
         private int HighlightChosenColor;
         FileManagement FileManager = new FileManagement();
-        SoundHub SoundHub = new SoundHub();
         public InGameUI(string soulfileplacement, int textchosencolor, int highlightchosencolor)
         {
             SoulFilePlacement = soulfileplacement;
             TextChosenColor = textchosencolor;
             HighlightChosenColor = highlightchosencolor;
         }
-        public void Initialisation()
+        public void Initialisation(SoundHub SoundHub)
         {
             Data = FileManager.LoadData(SoulFilePlacement);
             if (Data.InGameDay == 0)
@@ -41,6 +40,7 @@ namespace LITOURGIYA___OBLATION
                 LoadEnvironmentalData();
                 FileManager.SaveProgress(SoulFilePlacement, Data);
             }
+            SoundHub.StopMusic();
             SoulFilePlacement = Path.Combine(Directory.GetCurrentDirectory(), "Savefiles");
             SoulFilePlacement = Path.Combine(SoulFilePlacement, "[" + Data.FileCreationHour + "∶" + Data.FileCreationMinutes + ", " + Data.FileCreationDate + "] “" + Data.FileCreationName + "” - " + "Day " + Data.InGameDay + ".json");
             EmilyBaseUI BaseUI = new EmilyBaseUI(TextChosenColor, HighlightChosenColor, SoulFilePlacement);    

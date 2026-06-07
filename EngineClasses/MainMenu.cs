@@ -9,6 +9,7 @@ namespace LITOURGIYA___OBLATION
     internal class MainMenu
     {
         FileManagement FileManager = new FileManagement();
+        SoundHub SoundHub = new SoundHub();
 
         public int HighlightChosenColor = 6;
         public int TextChosenColor = 9;
@@ -17,6 +18,7 @@ namespace LITOURGIYA___OBLATION
         public void StartupMenu()
         {
             ConfigData = FileManager.LoadConfigFile();
+            SoundHub.PlayMusic("MainMenuOST");
             while (true)
             {
                 HighlightChosenColor = ConfigData.TextHighlightColor;
@@ -211,7 +213,7 @@ namespace LITOURGIYA___OBLATION
                 else
                 {
                     InGameUI InGameUI = new InGameUI(soulfiles[SelectedIndex], TextChosenColor, HighlightChosenColor);
-                    InGameUI.Initialisation();
+                    InGameUI.Initialisation(SoundHub);
                 }
             }
             else

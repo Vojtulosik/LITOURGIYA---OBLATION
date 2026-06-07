@@ -25,6 +25,9 @@
     <None Update="Assets\OBLATION-InCombatOST %28Drive Injector - CRY.NN%29.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Assets\OBLATION-MainMenuOST %28Decay.fla - SentryTurbo x CRY.NN%29.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

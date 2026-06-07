@@ -5,6 +5,8 @@ namespace LITOURGIYA___OBLATION
     {
         public static void Main(string[] args)
         {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Title = "LITOURGIYA - Oblation";
             Console.ResetColor();
             MainMenu MainMenu = new MainMenu();

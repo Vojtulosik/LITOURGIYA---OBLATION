@@ -53,6 +53,15 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                     "Spoiled paper" => 0.08m,
                     "Glass shard" => 0.04m,
                     "Flashlight" => 0.67m,
+                    "Can of mystery meat" => 0.70m,
+                    "Can of chicken stock" => 0.65m,
+                    "Can of beans" => 0.84m,
+                    "Can of Vegetable mix" => 0.52m,
+                    "Can of Tomato sauce" => 0.56m,
+                    "Bag of Tagliatelle" => 0.76m,
+                    "Bag of grated cheese" => 0.51m,
+                    "SNWLEO" => 8.91m,
+                    "Noisemaker bait" => 1.04m,
                     _ => 0m
                 };
 
@@ -84,6 +93,15 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                 "Spoiled paper" => 0.08m,
                 "Glass shard" => 0.04m,
                 "Flashlight" => 0.67m,
+                "Can of mystery meat" => 0.70m,
+                "Can of chicken stock" => 0.65m,
+                "Can of beans" => 0.84m,
+                "Can of Vegetable mix" => 0.52m,
+                "Can of Tomato sauce" => 0.56m,
+                "Bag of Tagliatelle" => 0.76m,
+                "Bag of grated cheese" => 0.51m,
+                "SNWLEO" => 8.91m,
+                "Noisemaker bait" => 1.04m,
                 _ => 0m
             };
 
@@ -112,6 +130,15 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                 "Spoiled paper" => 'R',
                 "Glass shard" => 'R',
                 "Flashlight" => 'T',
+                "Can of mystery meat" => 'C',
+                "Can of chicken stock" => 'C',
+                "Can of beans" => 'C',    
+                "Can of Vegetable mix" => 'C',
+                "Can of Tomato sauce" => 'C',
+                "Bag of Tagliatelle" => 'C',
+                "Bag of grated cheese" => 'C',
+                "SNWLEO" => 'G',
+                "Noisemaker bait" => 'E',
                 _ => ' '
             };
             return type;
@@ -145,13 +172,15 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
             int[] InventoryOptionColors;
             int[] HorizontalLineStructure;
             int[] SelectedInventoryFilters;
+            char[] InventoryLootTypes;
             if (ConsoleOutput.SelectedInventoryFilters == null) SelectedInventoryFilters = new int[6];
             else SelectedInventoryFilters = ConsoleOutput.SelectedInventoryFilters;
-            InventoryFilter(out InventoryOptions, out InventoryOptionColors, out InventorySpecialsymbol, out HorizontalLineStructure, Data, SelectedInventoryFilters);
+            InventoryFilter(out InventoryOptions, out InventoryOptionColors, out InventorySpecialsymbol, out HorizontalLineStructure, Data, SelectedInventoryFilters, out InventoryLootTypes);
             HorizontalOptions = [.. InventoryOptions, .. HorizontalOptions];
             HorizontalOptionColors = [.. InventoryOptionColors, .. HorizontalOptionColors];
             HorizontalOptionSymbols = [.. InventorySpecialsymbol, .. HorizontalOptionSymbols];
             ConsoleOutput.OptionIndexPlacement = 0;
+            ConsoleOutput.InventoryLootTypes = InventoryLootTypes;
             ConsoleOutput.UpdateValues(prompts, textcolors, null, null, null, HorizontalOptions, HorizontalOptionColors, HorizontalOptionSymbols, HorizontalLineStructure);
             ConsoleOutput.RenderText(prompts, textcolors);
             ConsoleOutput.RenderInventoryFilters();
@@ -164,7 +193,7 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                     case 0:
                         if (ConsoleOutput.SelectedInventoryFilters[ConsoleOutput.OptionHorizontalIndexPlacement] == 0) ConsoleOutput.SelectedInventoryFilters[ConsoleOutput.OptionHorizontalIndexPlacement] = 1;
                         else ConsoleOutput.SelectedInventoryFilters[ConsoleOutput.OptionHorizontalIndexPlacement] = 0;
-                        InventoryFilter(out InventoryOptions, out InventoryOptionColors, out InventorySpecialsymbol, out HorizontalLineStructure, Data, SelectedInventoryFilters);
+                        InventoryFilter(out InventoryOptions, out InventoryOptionColors, out InventorySpecialsymbol, out HorizontalLineStructure, Data, SelectedInventoryFilters, out InventoryLootTypes);
                         thought = "\n   Carrying the world globe on my back.";
                         prompts = new string[] {
                             "Inventory ", "- ", Data.EquippedBackpack + "\n",
@@ -190,6 +219,7 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                         HorizontalOptions = [.. InventoryOptions, .. HorizontalOptions];
                         HorizontalOptionColors = [.. InventoryOptionColors, .. HorizontalOptionColors];
                         HorizontalOptionSymbols = [.. InventorySpecialsymbol, .. HorizontalOptionSymbols];
+                        ConsoleOutput.InventoryLootTypes = InventoryLootTypes;
                         ConsoleOutput.UpdateValues(prompts, textcolors, null, null, null, HorizontalOptions, HorizontalOptionColors, HorizontalOptionSymbols, HorizontalLineStructure);
                         ConsoleOutput.RenderText(prompts, textcolors);
                         ConsoleOutput.RenderInventoryFilters();
@@ -199,7 +229,7 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                 }
             }
         }
-        private void InventoryFilter(out string[] InventoryOptions, out int[] InventoryOptionColors, out int[] InventorySpecialsymbol, out int[] HorizontalLineStructure, DataStructure Data, int[] SelectedInventoryFilters)
+        private void InventoryFilter(out string[] InventoryOptions, out int[] InventoryOptionColors, out int[] InventorySpecialsymbol, out int[] HorizontalLineStructure, DataStructure Data, int[] SelectedInventoryFilters, out char[] InventoryLootTypes)
         {
             char[] FilterOptions = new char[6];
             FilterOptions[0] = 'R';
@@ -253,6 +283,7 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
             }
 
             int repeat = (FilteredOptions.Count % 15 == 0 && FilteredOptions.Count > 0) ? 15 : FilteredOptions.Count;
+            InventoryLootTypes = new char[repeat];
             InventoryOptions = new string[repeat];
             InventorySpecialsymbol = new int[repeat * 2];
             InventoryOptionColors = new int[repeat];
@@ -264,12 +295,13 @@ namespace LITOURGIYA___OBLATION.GameplayClasses
                 for (int i = 1; i < repeat + 1; i++)
                 {
                     decimal ItemWeight = CalcItemWeight(FilteredOptions[i - 1], FilteredOptionValues[i - 1]);
-                    InventoryOptions[i - 1] = "[" + DefineLootType(FilteredOptions[i - 1]) + "] " + FilteredOptions[i - 1] + " [" + FilteredOptionValues[i - 1] + "x] " + ItemWeight + " KG";
+                    InventoryOptions[i - 1] = "] " + FilteredOptions[i - 1] + " [" + FilteredOptionValues[i - 1] + "x] " + ItemWeight + " KG";
                     InventorySpecialsymbol[SpecialSymbolIndex] = 7;
                     InventorySpecialsymbol[SpecialSymbolIndex + 1] = 7;
                     InventoryOptionColors[i - 1] = 7;
                     SpecialSymbolIndex += 2;
                     HorizontalLineStructure[i] = 1;
+                    InventoryLootTypes[i - 1] = DefineLootType(FilteredOptions[i - 1]);
                 }
                 HorizontalLineStructure[HorizontalLineStructure.Length - 2] = 3;
                 HorizontalLineStructure[HorizontalLineStructure.Length - 1] = 1;

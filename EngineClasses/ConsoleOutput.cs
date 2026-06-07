@@ -63,6 +63,7 @@ namespace LITOURGIYA___OBLATION
         private int[] HorizontalOptionSymbols;
         private int[] HorizontalLineStructure;
         public int[] SelectedInventoryFilters = new int[6];
+        public char[] InventoryLootTypes = new char[15];
 
         public ConsoleOutput(string[] options, string[] prompts, int[] textcolors, int[] delay, bool[] sound, int textcolor, int highlightcolor, int[] specialsymbol, int[] optiontextcolor, string[] optiontext)
         {
@@ -140,10 +141,10 @@ namespace LITOURGIYA___OBLATION
             for (int u = 0; u < prompt.Length; u++)
             {
                 Console.ForegroundColor = availabletextcolors[colors[u]];
-                if (sound[u] == true)
+                /*if (sound[u] == true)
                 {
                     soundhub.PlaySound();
-                }
+                }*/
                 Console.Write(prompt[u]);
                 Thread.Sleep(delay[u]);
             }
@@ -363,21 +364,63 @@ namespace LITOURGIYA___OBLATION
             Console.Write("  ");
             for (int i = 0; i < HorizontalOptions.Length; i++)
             {
+                string option = HorizontalOptions[i];
+                if (option[0] == ']')
+                {
+                    if (OptionHorizontalIndexPlacement == LineStructureCount && OptionIndexPlacement == LineStructureIndex)
+                    {
+                        Console.BackgroundColor = TextHighlightColor;
+                        Console.ForegroundColor = TextColor;
+                        IndexSymbol = FileManager.LoadIndexChar();
+                        Console.Write(IndexSymbol + "[" + InventoryLootTypes[i]);
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.Write("[");
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        switch (InventoryLootTypes[i])
+                        {
+                            case 'R':
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                break;
+                            case 'C':
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                break;
+                            case 'T':
+                                Console.ForegroundColor = ConsoleColor.Magenta;
+                                break;
+                            case 'M':
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                break;
+                            case 'E':
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                break;
+                            case 'G':
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                break;
+                        }
+                        Console.Write(InventoryLootTypes[i]);
+                    }
+                }
+
+
                 if (OptionHorizontalIndexPlacement == LineStructureCount && OptionIndexPlacement == LineStructureIndex)
                 {
                     Console.BackgroundColor = TextHighlightColor;
                     Console.ForegroundColor = TextColor;
-                    IndexSymbol = FileManager.LoadIndexChar();
+                    if (option[0] != '[') IndexSymbol = FileManager.LoadIndexChar();
                 }
                 else
                 {
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.ForegroundColor = availabletextcolors[HorizontalOptionColors[i]];
-                    IndexSymbol = ' ';
                 }
                 if (OptionHorizontalIndexPlacement == LineStructureCount && OptionIndexPlacement == LineStructureIndex)
                 {
-                    Console.Write($"{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex]]}{IndexSymbol}{HorizontalOptions[i]}{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex + 1]]}");
+                    if (option[0] != ']') Console.Write($"{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex]]}{IndexSymbol}{HorizontalOptions[i]}{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex + 1]]}");
+                    else Console.Write($"{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex]]}{HorizontalOptions[i]}{Symbols[HorizontalOptionSymbols[SpecialSymbolIndex + 1]]}");
                 }
                 else
                 {

@@ -2,28 +2,43 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace LITOURGIYA___OBLATION
 {
-    internal class SoundHub
+    public class SoundHub
     {
-        public void PlaySound()
+        private AudioFileReader audioFile;
+        private WaveOutEvent outputDevice;
+        public void PlayMusic(string audio)
         {
-            Task.Run(() => Console.Beep(37, 300));
-        }
-        public void PlayFromFile()
-        {
-
+            switch (audio)
+            {
+                case "CombatOST":
+                    audio = "OBLATION-InCombatOST (Drive Injector - CRY.NN).mp3";
+                    break;
+                case "MainMenuOST":
+                    audio = "OBLATION-MainMenuOST (Decay.fla - SentryTurbo x CRY.NN).mp3";
+                    break;
+            }
             string file = Path.Combine(Directory.GetCurrentDirectory(), "Assets");
-            file = Path.Combine(file, "OBLATION-InCombatOST (Drive Injector - CRY.NN).mp3");
-            var audioFile = new AudioFileReader(file);
-            var outputDevice = new WaveOutEvent();
+            file = Path.Combine(file, audio);
+
+            outputDevice?.Stop();
+            outputDevice?.Dispose();
+            audioFile?.Dispose();
+
+            audioFile = new AudioFileReader(file);
+            outputDevice = new WaveOutEvent();
 
             outputDevice.Init(audioFile);
             outputDevice.Volume = 0.5f;
             outputDevice.Play();
-            Console.ReadKey();
+        }
+        public void StopMusic()
+        {
+            outputDevice?.Stop();
         }
     }
 }

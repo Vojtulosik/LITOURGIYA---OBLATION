@@ -18,6 +18,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
         private string location = "Enterance corridor";
         private int SelectedIndex = 0;
         private LootInteractionGen LootInter = new LootInteractionGen();
+        private BasicGameplayFunctions BasicFunc = new BasicGameplayFunctions();
         private List<string> LootOptions = new List<string>();
         private List<int> LootOptionsValues = new List<int>();
         private List<int> LootOptionsStoreValues = new List<int>();
@@ -74,6 +75,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                         TinyStockroom();
                         break;
                     case 1:
+                        CorridorToCafeteria();
                         break;
                     case 2:
                         esc = true;
@@ -278,6 +280,116 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
             LootOptionsStoreValues.Clear();
             LootData = Data.EnvironmentalLootData[ObjectName];
             LootDataNames = Data.EnvironmentalLootDataNames[ObjectName];
+        }
+        private void CorridorToCafeteria()
+        {
+            bool esc = true;
+            while (esc)
+            {
+                location = "Enterance corridor";
+                string Sensations = BodyStatus.GrabSensations(Data);
+                string[] thoughts =
+                    {
+                    "   Yeah, it just continues into total darkness. No sign of working ceiling lights. I should use a flashlight \n   or something.",
+                };
+                string[] options = { "Back" };
+                bool ToolFound = false;
+                foreach(string tool in Data.Inventory)//Change to holsteredtools array later
+                {
+                    string refined = "";
+                    foreach(char c in tool)
+                    {
+                        if (!char.IsNumber(c)) refined += c;
+                    }
+                    if (refined == "Flashlight")
+                    {
+                        options = new string[] { "Use Flashlight", "Back" };
+                        ToolFound = true;
+                    }
+                }
+                int[] optioncolors =
+                {
+                    6, 6
+                };
+                int[] specialsymbol =
+                {
+                    5, 6, 0, 1
+                };
+                string[] prompts =
+                {
+                    "ORCHIDEJ POWER PLANT", " - ", "Left section" + "\n", "Day " + Data.InGameDay + ", " + Data.Time + "\n", "\n", "Thoughts :\n", thoughts[0], "\n", "Sensations :\n", "  " + Sensations + "\n", "\n", "Location : ", location + "\n", "\n"
+                };
+                int[] textcolors =
+                {
+                    4, 7, 6, 6, 7, 1, 7, 7, 7, 1, 7, 1, 5, 7
+                };
+                ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
+                ConsoleOutput.RenderText(prompts, textcolors);
+                ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
+                SelectedIndex = ConsoleOutput.Run(false, Data);
+                switch (SelectedIndex)
+                {
+                    case 0:
+                        if (ToolFound) Cafeteria();
+                        else esc = false;
+                        break;
+                    case 1:
+                        esc = false;
+                        break;
+                }
+            }
+        }
+        private void Cafeteria()
+        {
+            bool esc = false;
+            while (esc == false)
+            {
+                Data.Inventory.Add("Can of mystery meat");
+                Data.InventoryValues.Add(1);
+                Data.Inventory.Add("Can of chicken stock");
+                Data.InventoryValues.Add(1);
+                Data.Inventory.Add("Can of Vegetable mix");
+                Data.InventoryValues.Add(1);
+                Data.Inventory.Add("Can of Tomato sauce");
+                Data.InventoryValues.Add(1);
+                Data.Inventory.Add("Bag of Tagliatelle");
+                Data.InventoryValues.Add(1);
+                Data.Inventory.Add("Bag of grated cheese");
+                Data.InventoryValues.Add(1);
+                Data.Inventory.Add("SNWLEO");
+                Data.InventoryValues.Add(1);
+                Data.Inventory.Add("Noisemaker bait");
+                Data.InventoryValues.Add(1);
+                Data.MoodStatus = 2;
+                location = "Cafeteria";
+                string Sensations = BodyStatus.GrabSensations(Data);
+                string[] thoughts =
+                    {
+                    "   A fishy odor always means there's food to be discovered. And it's especially strong towards the kitchen.\n",
+                    "   Though, it could still be rott- ...I think I just heard footsteps.\n"
+                };
+                string[] options = { "Center - Bench tables", "Facing wall door - ???", "Left wall - Kitchen", "Right wall - Janitor cart", "Right wall - Barricaded double door", "Back" };
+                int[] optioncolors =
+                {
+                    6, 6, 6, 6, 6, 6
+                };
+                int[] specialsymbol =
+                {
+                    5, 6, 5, 6, 5, 6, 5, 6, 5, 6, 5, 6
+                };
+                string[] prompts =
+                {
+                    "ORCHIDEJ POWER PLANT", " - ", "Left section" + "\n", "Day " + Data.InGameDay + ", " + Data.Time + "\n", "\n", "Thoughts :\n", thoughts[0], thoughts[1], "\n", "Sensations :\n", "  " + Sensations + "\n", "\n", "Location : ", location + "\n", "\n"
+                };
+                int[] textcolors =
+                {
+                    4, 7, 6, 6, 7, 1, 7, 7, 7, 1, 7, 7, 1, 5, 7
+                };
+                ConsoleOutput ConsoleOutput = new ConsoleOutput(options, prompts, textcolors, null, null, TextChosenColor, HighlightChosenColor, specialsymbol, optioncolors, null);
+                ConsoleOutput.RenderText(prompts, textcolors);
+                ConsoleOutput.RenderOptions(options, specialsymbol, optioncolors);
+                SelectedIndex = ConsoleOutput.Run(false, Data);
+            }
         }
     }
 }

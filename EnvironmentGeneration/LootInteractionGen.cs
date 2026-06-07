@@ -270,6 +270,15 @@ namespace LITOURGIYA___OBLATION.EnvironmentGeneration
                 "Spoiled paper" => 'R',
                 "Glass shard" => 'R',
                 "Flashlight" => 'T',
+                "Can of mystery meat" => 'C',
+                "Can of chicken stock" => 'C',
+                "Can of beans" => 'C',
+                "Can of Vegetable mix" => 'C',
+                "Can of Tomato sauce" => 'C',
+                "Bag of Tagliatelle" => 'C',
+                "Bag of grated cheese" => 'C',
+                "SNWLEO" => 'G',
+                "Noisemaker bait" => 'E',
                 _ => ' '
             };
             return type;
