@@ -24,6 +24,7 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
         private List<int> LootOptionsStoreValues = new List<int>();
         private int[] LootData;
         private string[] LootDataNames;
+        SoundHub SoundHub = new SoundHub();
 
         public OrchidejLeftSection(int textchosencolor, int hightlightchosencolor, DataStructure data)
         {
@@ -361,12 +362,12 @@ namespace LITOURGIYA___OBLATION.InGameUIClasses
                 Data.Inventory.Add("Noisemaker bait");
                 Data.InventoryValues.Add(1);
                 Data.MoodStatus = 2;
-                location = "Cafeteria";
+                location = "Cafeteria"; //Entering it for the first time plays a sound effect of someone running
                 string Sensations = BodyStatus.GrabSensations(Data);
                 string[] thoughts =
                     {
                     "   A fishy odor always means there's food to be discovered. And it's especially strong towards the kitchen.\n",
-                    "   Though, it could still be rott- ...I think I just heard footsteps.\n"
+                    "   Though, it could still be rotteh- ...What was that..?\n"
                 };
                 string[] options = { "Center - Bench tables", "Facing wall door - ???", "Left wall - Kitchen", "Right wall - Janitor cart", "Right wall - Barricaded double door", "Back" };
                 int[] optioncolors =

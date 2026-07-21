@@ -29,6 +29,7 @@ namespace LITOURGIYA___OBLATION
         public void Hideout() 
         {
             LoadNotes NoteLoader = new LoadNotes(HighlightChosenColor, TextChosenColor);
+            SoundHub.PlayMusic("InHideoutOST");
             //SoundHub.PlayFromFile();
             DataStructure Data = UpdateData();
             while (true)
